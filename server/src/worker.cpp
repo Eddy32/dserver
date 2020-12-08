@@ -224,9 +224,9 @@ int main(int argc, char *argv[])
       // mat -> vector
       std::vector<unsigned char> res_vec;
       cv::imencode(".jpg", mat, res_vec, param);
-      std::ofstream lelee ("dete" + std::to_string(msg)+ "/" + std::to_string(iframe) + ".jpg", std::ios::out | std::ios::app | std::ios::binary);
+      std::ofstream sadd ("detett" + std::to_string(msg)+ "_" + std::to_string(iframe) + ".jpg", std::ios::out | std::ios::app | std::ios::binary);
       const char* a = reinterpret_cast<const char*>(&res_vec[0]);
-      lelee.write(a,res_vec.size());
+      sadd.write(a,res_vec.size());
       }
       Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes);
       // vector -> frame array
