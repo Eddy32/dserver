@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
   double det_time;
 
   while(!exit_flag) {
-   /* // recv from ven
+  /*  // recv from ven
     if (unprocessed_frame_queue.size() > 0) {
       frame = unprocessed_frame_queue.front();
       unprocessed_frame_queue.pop_front();
@@ -198,9 +198,9 @@ int main(int argc, char *argv[])
 
       // push to processed frame_queue
       processed_frame_queue.push_back(frame);
-    }
+    }*/
   }
-  */
+  
   //delete frame_pool;
   zmq_close(sock_pull);
   zmq_close(sock_push);
