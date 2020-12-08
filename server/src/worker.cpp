@@ -39,46 +39,44 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char json_buf[3000000];
-  //Frame frame;
+  unsigned char json_buf[JSON_BUFF_SIZE];
+  Packet* packet;
 
   while(!exit_flag) {
-    recv_json_len = zmq_recv(sock_pull, json_buf, 3000000, ZMQ_NOBLOCK);
-/*
-    if (recv_json_len > 0) {
-      frame = frame_pool->alloc_frame();
-      json_buf[recv_json_len] = '\0';
-      json_to_frame(json_buf, frame);
+    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
 
+    if (recv_json_len > 0) {
+      packet = json_to_packet(json_buf);
+     
 #ifdef DEBUG
-      std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
-        << " LEN : " << frame.msg_len << std::endl;
+      //std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
+      //  << " LEN : " << frame.msg_len << std::endl;
 #endif
-      unprocessed_frame_queue.push_back(frame);
-    }*/
+      unprocessed_frame_queue.push_back(*packet);
+    }
   }
 }
 
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
- // unsigned char json_buf[JSON_BUF_LEN];
- // Frame frame;
+  unsigned char json_buf[JSON_BUFF_SIZE];
+  Packet* packet;
 
   while(!exit_flag) {
- //   if (processed_frame_queue.size() > 0) {
-     /* frame = processed_frame_queue.front();
+    if (processed_frame_queue.size() > 0) {
+      packet = &(processed_frame_queue.front());
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
-      std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
-        << " LEN : " << frame.msg_len << std::endl;
+   //   std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
+    //    << " LEN : " << frame.msg_len << std::endl;
 #endif
-      send_json_len = frame_to_json(json_buf, frame);
+      send_json_len = packet_to_json(json_buf, packet);
       zmq_send(sock_push, json_buf, send_json_len, 0);
 
-      frame_pool->free_frame(frame); */
- //   }
+     
+    }
   }
 }
 
