@@ -132,12 +132,13 @@ int main()
 
   pthread_detach(send_thread);
   pthread_detach(recv_thread);
-  /*
+  
   // frame 
-  Frame frame;
+  //Frame frame;
   volatile int track_frame = 1;
   
   while(!exit_flag) {
+    /*
     if (!frame_map.empty()) {
       tbb::concurrent_hash_map<int, Frame>::accessor c_a;
 
@@ -153,8 +154,9 @@ int main()
         track_frame++;
       }
     }
+      */
   }
-  */
+
   //delete frame_pool;
 
   zmq_close(sock_pull);
