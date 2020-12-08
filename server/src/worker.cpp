@@ -21,11 +21,11 @@ void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-//SharedQueue<Frame> unprocessed_frame_queue;
-//SharedQueue<Frame> processed_frame_queue;;
+SharedQueue<Frame> unprocessed_frame_queue;
+SharedQueue<Frame> processed_frame_queue;;
 
 // pool
- Frame_pool *frame_pool;
+// Frame_pool *frame_pool;
 
 // signal
 volatile bool exit_flag = false;
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
   assert(ret != -1);
 
   // frame__pool
-  frame_pool = new Frame_pool(5000);
+  //frame_pool = new Frame_pool(5000);
   //new CMemPool(5000, 100);
   //new CMemPool(5000, 76800);
   //new CMemPool(5000, 25600);
