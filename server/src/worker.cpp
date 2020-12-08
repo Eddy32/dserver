@@ -14,6 +14,7 @@
 #include "yolo_detector.hpp"
 #include <opencv2/opencv.hpp>			
 #include "frame.hpp"
+#include "packet.hpp"
 
 // ZMQ
 void *sock_pull;
@@ -22,6 +23,7 @@ void *sock_push;
 // ShareQueue
 SharedQueue<Frame> unprocessed_frame_queue;
 SharedQueue<Frame> processed_frame_queue;;
+SharedQueue<Packet*> test;;
 
 // pool
 // Frame_pool *frame_pool;
