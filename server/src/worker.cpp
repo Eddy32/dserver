@@ -66,7 +66,7 @@ void *send_in_thread(void *ptr)
 
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
-      printf("4\n");
+      printf("4 %d\n", processed_frame_queue.size());
       packet = &(processed_frame_queue.front());
       processed_frame_queue.pop_front();
 
@@ -75,8 +75,8 @@ void *send_in_thread(void *ptr)
     //    << " LEN : " << frame.msg_len << std::endl;
 #endif
       printf("5\n");
-      send_json_len = packet_to_json(json_buf, packet);
-      zmq_send(sock_push, json_buf, send_json_len, 0);
+      //send_json_len = packet_to_json(json_buf, packet);
+      //zmq_send(sock_push, json_buf, send_json_len, 0);
       printf("6\n");
      
     }
