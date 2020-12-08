@@ -47,7 +47,8 @@ void *recv_in_thread(void *ptr)
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
     if (recv_json_len > 0) {
       packet = json_to_packet(json_buf);
-     printf("2\n");
+      printf("NUMERO DE FRAMES: %d",packet->frames.size());
+      printf("2\n");
 #ifdef DEBUG
       //std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
       //  << " LEN : " << frame.msg_len << std::endl;
@@ -68,6 +69,7 @@ void *send_in_thread(void *ptr)
     if (processed_frame_queue.size() > 0) {
       printf("4 %d\n", processed_frame_queue.size());
       packet = &(processed_frame_queue.front());
+
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
