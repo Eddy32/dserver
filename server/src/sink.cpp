@@ -60,8 +60,8 @@ void *recv_in_thread(void *ptr)
 
       
 #ifdef DEBUG
-      std::cout << "Sink | Recv From Worker | SEQ : " << frame.seq_buf
-        << " LEN : " << frame.msg_len << std::endl;
+     // std::cout << "Sink | Recv From Worker | SEQ : " << frame.seq_buf
+     //   << " LEN : " << frame.msg_len << std::endl;
 #endif
       tbb::concurrent_hash_map<int, Frame>::accessor a;
       /*while(1)
