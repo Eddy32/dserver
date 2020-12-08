@@ -49,6 +49,7 @@ void *recv_in_thread(void *ptr)
       packet = json_to_packet(json_buf);
       //printf("NUMERO DE FRAMES: %d",packet->frames.size());
       //printf("2\n");
+      int i =0;
       for(cv::Mat mat: packet->frames){
         i++;
         printf("frame: %d",i);
