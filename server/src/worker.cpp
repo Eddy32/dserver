@@ -47,8 +47,8 @@ void *recv_in_thread(void *ptr)
       packet = json_to_packet(json_buf);
      
 #ifdef DEBUG
-      std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
-        << " LEN : " << frame.msg_len << std::endl;
+      //std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
+      //  << " LEN : " << frame.msg_len << std::endl;
 #endif
       unprocessed_frame_queue.push_back(packet);
     }
@@ -67,8 +67,8 @@ void *send_in_thread(void *ptr)
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
-      std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
-        << " LEN : " << frame.msg_len << std::endl;
+   //   std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
+    //    << " LEN : " << frame.msg_len << std::endl;
 #endif
       send_json_len = packet_to_json(json_buf, packet);
       zmq_send(sock_push, json_buf, send_json_len, 0);
