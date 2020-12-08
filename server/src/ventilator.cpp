@@ -38,8 +38,9 @@ void *recv_in_thread(void *ptr)
     if (recv_json_len > 0) {
       Packet* packet = json_to_packet(json_buf);
 #ifdef DEBUG
-      std::cout << "Ventilator | Recv From Client | SEQ : " << frame.seq_buf 
-        << " LEN : " << frame.msg_len << std::endl;
+     // std::cout << "Ventilator | Recv From Client | SEQ : " << frame.seq_buf 
+       // << " LEN : " << frame.msg_len << std::endl;
+       printf("Dados RECEBIDOS\n");
 #endif
       frame_queue.push_back(packet);
     }
@@ -58,8 +59,9 @@ void *send_in_thread(void *ptr)
       frame_queue.pop_front();
 
 #ifdef DEBUG
-      std::cout << "Ventilator | Send To Worker | SEQ : " << frame.seq_buf 
-        << " LEN : " << frame.msg_len << std::endl;
+   //   std::cout << "Ventilator | Send To Worker | SEQ : " << frame.seq_buf 
+    //    << " LEN : " << frame.msg_len << std::endl;
+    printf("Dados ENVIADOS\n");
 #endif
       
       send_json_len = packet_to_json(json_buf, packet);

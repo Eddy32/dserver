@@ -7,24 +7,25 @@
 #include <pthread.h>
 #include <csignal>
 #include "share_queue.h"
-#include "frame.hpp"
+#include "packet.hpp"
 #include "args.hpp"
 #include "yolo_v2_class.hpp"
 #include "DetectorInterface.hpp"
 #include "pose_detector.hpp"
 #include "yolo_detector.hpp"
-#include <opencv2/opencv.hpp>			
+#include <opencv2/opencv.hpp>
+#include <fstream>	
 
 // ZMQ
 void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-SharedQueue<Frame> unprocessed_frame_queue;
-SharedQueue<Frame> processed_frame_queue;;
+SharedQueue<Packet*> unprocessed_frame_queue;
+SharedQueue<Packet*> processed_frame_queue;;
 
 // pool
-Frame_pool *frame_pool;
+//Frame_pool *frame_pool;
 
 // signal
 volatile bool exit_flag = false;
@@ -36,22 +37,20 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char json_buf[JSON_BUF_LEN];
-  Frame frame;
+  unsigned char json_buf[JSON_BUFF_SIZE];
+  Packet* packet;
 
   while(!exit_flag) {
-    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
+    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
 
     if (recv_json_len > 0) {
-      frame = frame_pool->alloc_frame();
-      json_buf[recv_json_len] = '\0';
-      json_to_frame(json_buf, frame);
-
+      packet = json_to_packet(json_buf);
+     
 #ifdef DEBUG
       std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
         << " LEN : " << frame.msg_len << std::endl;
 #endif
-      unprocessed_frame_queue.push_back(frame);
+      unprocessed_frame_queue.push_back(packet);
     }
   }
 }
@@ -59,22 +58,22 @@ void *recv_in_thread(void *ptr)
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char json_buf[JSON_BUF_LEN];
-  Frame frame;
+  unsigned char json_buf[JSON_BUFF_SIZE];
+  Packet* packet;
 
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
-      frame = processed_frame_queue.front();
+      packet = processed_frame_queue.front();
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
       std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
         << " LEN : " << frame.msg_len << std::endl;
 #endif
-      send_json_len = frame_to_json(json_buf, frame);
+      send_json_len = packet_to_json(json_buf, packet);
       zmq_send(sock_push, json_buf, send_json_len, 0);
 
-      frame_pool->free_frame(frame);
+     
     }
   }
 }
@@ -115,7 +114,7 @@ int main(int argc, char *argv[])
   assert(ret != -1);
 
   // frame__pool
-  frame_pool = new Frame_pool(5000);
+  //frame_pool = new Frame_pool(5000);
 
   // Thread
   pthread_t recv_thread;
@@ -140,7 +139,8 @@ int main(int argc, char *argv[])
   //PoseDetector pose_detector(cfg_path, weights_path, gpu_id);
 
   // frame
-  Frame frame;
+  //Frame frame;
+  Packet* packet;
   int frame_len;
   int frame_seq;
   unsigned char *frame_buf_ptr;
@@ -148,57 +148,67 @@ int main(int argc, char *argv[])
   auto time_begin = std::chrono::steady_clock::now();
   auto time_end = std::chrono::steady_clock::now();
   double det_time;
-
+  int msg = 0;
+  int iframe = 0;
   while(!exit_flag) {
     // recv from ven
     if (unprocessed_frame_queue.size() > 0) {
-      frame = unprocessed_frame_queue.front();
+      msg+=1;
+      packet = unprocessed_frame_queue.front();
       unprocessed_frame_queue.pop_front();
 
-      frame_seq = atoi((const char*)frame.seq_buf);
-      frame_len = frame.msg_len;
-      frame_buf_ptr = frame.msg_buf;
+      //frame_seq = atoi((const char*)frame.seq_buf);
+      //frame_len = frame.msg_len;
+      //frame_buf_ptr = frame.msg_buf;
 
       // darknet
       // unsigned char array -> vector
-      std::vector<unsigned char> raw_vec(frame_buf_ptr, frame_buf_ptr + frame_len);
-
+      std::vector<cv::Mat> matBoxes;
+      for(cv::Mat mat: packet->frames){
+        iframe+=1;
+        //std::vector<unsigned char> raw_vec(frame_buf_ptr, frame_buf_ptr + frame_len);
+        resize(mat, mat, cv::Size(640, 480));
       // vector -> mat
-      cv::Mat raw_mat = cv::imdecode(cv::Mat(raw_vec), 1);
+      //cv::Mat raw_mat = cv::imdecode(cv::Mat(raw_vec), 1);
 
       // detect
       time_begin = std::chrono::steady_clock::now();
-      detector->detect(raw_mat, thresh);
+      detector->detect(mat, thresh);
       time_end = std::chrono::steady_clock::now();
       det_time = std::chrono::duration <double, std::milli> (time_end - time_begin).count();
 
 #ifdef DEBUG
-      std::cout << "Darknet | Detect | SEQ : " << frame.seq_buf << " Time : " << det_time << "ms" << std::endl;
+      //n std::cout << "Darknet | Detect | SEQ : " << frame.seq_buf << " Time : " << det_time << "ms" << std::endl;
 #endif
 
       // detect result to json
-      std::string det_json = detector->det_to_json(frame_seq);
-      frame.det_len = det_json.size();
-      memcpy(frame.det_buf, det_json.c_str(), frame.det_len);
-      frame.det_buf[frame.det_len] = '\0';
+      //std::string det_json = detector->det_to_json(frame_seq);
+      //frame.det_len = det_json.size();
+      //memcpy(frame.det_buf, det_json.c_str(), frame.det_len);
+      //frame.det_buf[frame.det_len] = '\0';
 
       // detect result (bounding box OR Skeleton) draw
-      detector->draw(raw_mat);
-
+      detector->draw(mat);
+      matBoxes.push_back(mat.clone());
       // mat -> vector
       std::vector<unsigned char> res_vec;
-      cv::imencode(".jpg", raw_mat, res_vec, param);
-
+      cv::imencode(".jpg", mat, res_vec, param);
+      std::ofstream lelee ("test" + std::to_string(msg)+ "/" + std::to_string(iframe) + ".jpg", std::ios::out | std::ios::app | std::ios::binary);
+      const char* a = reinterpret_cast<const char*>(&res_vec[0]);
+      lelee.write(a,res_vec.size());
+      }
+      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes);
       // vector -> frame array
-      frame.msg_len = res_vec.size();
-      std::copy(res_vec.begin(), res_vec.end(), frame.msg_buf);
+      //frame.msg_len = res_vec.size();
+      //std::copy(res_vec.begin(), res_vec.end(), frame.msg_buf);
 
       // push to processed frame_queue
-      processed_frame_queue.push_back(frame);
+      processed_frame_queue.push_back(packetProcessed);
+      
     }
   }
 
-  delete frame_pool;
+  //delete frame_pool;
   zmq_close(sock_pull);
   zmq_close(sock_push);
   zmq_ctx_destroy(context);
