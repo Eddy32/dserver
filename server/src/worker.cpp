@@ -82,12 +82,12 @@ void *send_in_thread(void *ptr)
   int send_json_len;
   unsigned char json_buf[JSON_BUFF_SIZE];
   Packet* packet;
-
+  Packet packs;
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
       printf("4 %d\n", processed_frame_queue.size());
-      packet = &(processed_frame_queue.front());
-
+      packs = processed_frame_queue.front();
+      packet = &packs;
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
