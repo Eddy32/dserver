@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
   assert(ret != -1);
 
   // frame__pool
-  frame_pool = new Frame_pool(5000);
+  //frame_pool = new Frame_pool(5000);
 
   // Thread
   pthread_t recv_thread;
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  delete frame_pool;
+  //delete frame_pool;
   zmq_close(sock_pull);
   zmq_close(sock_push);
   zmq_ctx_destroy(context);
