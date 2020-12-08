@@ -95,8 +95,8 @@ void *send_in_thread(void *ptr)
     //    << " LEN : " << frame.msg_len << std::endl;
 #endif
       printf("5\n");
-      //send_json_len = packet_to_json(json_buf, packet);
-      //zmq_send(sock_push, json_buf, send_json_len, 0);
+      send_json_len = packet_to_json(json_buf, packet);
+      zmq_send(sock_push, json_buf, send_json_len, 0);
       printf("6\n");
      
     }
@@ -178,12 +178,14 @@ int main(int argc, char *argv[])
   double det_time;
   int msg = 0;
   int iframe = 0;
+  Packet packs;
   while(!exit_flag) {
     // recv from ven
     if (unprocessed_frame_queue.size() > 0) {
       msg+=1;
-      packet = &(unprocessed_frame_queue.front());
+      packs = unprocessed_frame_queue.front();
       unprocessed_frame_queue.pop_front();
+      packet = &packs;
 
       //frame_seq = atoi((const char*)frame.seq_buf);
       //frame_len = frame.msg_len;

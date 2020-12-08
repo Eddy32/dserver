@@ -90,7 +90,7 @@ void *send_in_thread(void *ptr)
       packet = &packs;
       
       ///
-
+      /*
       std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
       int i = 0;
       
@@ -107,7 +107,7 @@ void *send_in_thread(void *ptr)
         
         
       }
-      
+      */
       ///
 
 
