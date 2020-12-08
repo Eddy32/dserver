@@ -14,6 +14,7 @@
 #include "pose_detector.hpp"
 #include "yolo_detector.hpp"
 #include <opencv2/opencv.hpp>			
+#include "packet.hpp"
 
 // ZMQ
 void *sock_pull;
