@@ -29,7 +29,7 @@ SharedQueue<Packet> processed_frame_queue;
 
 // pool
 // Frame_pool *frame_pool;
-std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
+
 // signal
 volatile bool exit_flag = false;
 void sig_handler(int s)
@@ -50,6 +50,7 @@ void *recv_in_thread(void *ptr)
       //printf("NUMERO DE FRAMES: %d",packet->frames.size());
       //printf("2\n");
       int i =0;
+      std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
       for(cv::Mat mat: packet->frames){
         i++;
         printf("frame: %d",i);
@@ -120,7 +121,7 @@ int main(int argc, char *argv[])
       cfg_path, weights_path, names_path, gpu_id, thresh);
 
   // opencv
-  //std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
+  std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
 
   // ZMQ
   int ret;

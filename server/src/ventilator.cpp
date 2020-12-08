@@ -29,7 +29,6 @@ void sig_handler(int s)
 
 
 
-std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
 
 void *recv_in_thread(void *ptr)
 {
@@ -44,6 +43,8 @@ void *recv_in_thread(void *ptr)
       Packet* packet = json_to_packet(json_buf);
 
       ///
+
+      std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
       int i = 0;
       /*
       for(cv::Mat mat: packet->frames){
