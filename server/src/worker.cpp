@@ -45,7 +45,6 @@ void *recv_in_thread(void *ptr)
 
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
-    printf("1\n");
     if (recv_json_len > 0) {
       packet = json_to_packet(json_buf);
      printf("2\n");
