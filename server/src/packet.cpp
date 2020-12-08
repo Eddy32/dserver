@@ -3,7 +3,7 @@
 #include <json-c/json.h>	// for json
 #include <cstring> // for memcpy
 #include <stdio.h>
-#include "base64.hpp"
+#include "base64.h"
 #include "packet.hpp"
 #include <iostream>
 
