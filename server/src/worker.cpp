@@ -45,15 +45,16 @@ void *recv_in_thread(void *ptr)
 
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
-
+    printf("1\n");
     if (recv_json_len > 0) {
       packet = json_to_packet(json_buf);
-     
+     printf("2\n");
 #ifdef DEBUG
       //std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
       //  << " LEN : " << frame.msg_len << std::endl;
 #endif
       unprocessed_frame_queue.push_back(*packet);
+    printf("3\n");
     }
   }
 }
@@ -66,6 +67,7 @@ void *send_in_thread(void *ptr)
 
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
+      printf("4\n");
       packet = &(processed_frame_queue.front());
       processed_frame_queue.pop_front();
 
@@ -73,9 +75,10 @@ void *send_in_thread(void *ptr)
    //   std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
     //    << " LEN : " << frame.msg_len << std::endl;
 #endif
+      printf("5\n");
       send_json_len = packet_to_json(json_buf, packet);
       zmq_send(sock_push, json_buf, send_json_len, 0);
-
+      printf("6\n");
      
     }
   }
@@ -171,6 +174,7 @@ int main(int argc, char *argv[])
       // unsigned char array -> vector
       std::vector<cv::Mat> matBoxes;
       for(cv::Mat mat: packet->frames){
+        printf("MENSAGEM: %d, Frame: %d",msg,iframe);
         iframe+=1;
         //std::vector<unsigned char> raw_vec(frame_buf_ptr, frame_buf_ptr + frame_len);
         resize(mat, mat, cv::Size(640, 480));
