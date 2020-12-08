@@ -25,7 +25,7 @@ SharedQueue<Frame> unprocessed_frame_queue;
 SharedQueue<Frame> processed_frame_queue;;
 
 // pool
-Frame_pool *frame_pool;
+//Frame_pool *frame_pool;
 
 // signal
 volatile bool exit_flag = false;
@@ -38,11 +38,11 @@ void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
   unsigned char json_buf[JSON_BUF_LEN];
-  Frame frame;
+  //Frame frame;
 
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
-
+/*
     if (recv_json_len > 0) {
       frame = frame_pool->alloc_frame();
       json_buf[recv_json_len] = '\0';
@@ -53,7 +53,7 @@ void *recv_in_thread(void *ptr)
         << " LEN : " << frame.msg_len << std::endl;
 #endif
       unprocessed_frame_queue.push_back(frame);
-    }
+    }*/
   }
 }
 
@@ -61,11 +61,11 @@ void *send_in_thread(void *ptr)
 {
   int send_json_len;
   unsigned char json_buf[JSON_BUF_LEN];
-  Frame frame;
+ // Frame frame;
 
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
-      frame = processed_frame_queue.front();
+     /* frame = processed_frame_queue.front();
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
@@ -75,7 +75,7 @@ void *send_in_thread(void *ptr)
       send_json_len = frame_to_json(json_buf, frame);
       zmq_send(sock_push, json_buf, send_json_len, 0);
 
-      frame_pool->free_frame(frame);
+      frame_pool->free_frame(frame); */
     }
   }
 }
