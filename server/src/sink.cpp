@@ -33,8 +33,9 @@ void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
   unsigned char json_buf[JSON_BUFF_SIZE];
+  cv::VideoWriter writer;
   
-
+  int idV =1;
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
 
@@ -44,6 +45,7 @@ void *recv_in_thread(void *ptr)
       //printf("2\n");
 
       /////
+      /*
       int i =0;
       std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
       for(cv::Mat mat: packet->frames){
@@ -57,8 +59,22 @@ void *recv_in_thread(void *ptr)
         const char* a = reinterpret_cast<const char*>(&res_vec[0]);
         lelee.write(a,res_vec.size());
       }
+      */
+      ////
 
-      
+      writer.open("captura" + std::to_string(idV) + ".avi" ,CV_FOURCC('X','V','I','D'), 20, cv::Size(640, 480), true);
+      if (!writer.isOpened()) {
+      printf("BRO ESTOU COM TRIPS!");
+      }
+      idV+=1;
+
+      for(cv::Mat mat: packet->frames){
+        printf("printing frame %d \n",idV);
+        writer.write(mat);
+      }
+
+      ////
+
 #ifdef DEBUG
      // std::cout << "Sink | Recv From Worker | SEQ : " << frame.seq_buf
      //   << " LEN : " << frame.msg_len << std::endl;
