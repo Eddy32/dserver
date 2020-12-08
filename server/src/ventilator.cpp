@@ -86,8 +86,31 @@ void *send_in_thread(void *ptr)
   while(!exit_flag) {
     if (frame_queue.size() > 0) {
       packs = (frame_queue.front());
-      packet = &packs;
       frame_queue.pop_front();
+      packet = &packs;
+      
+      ///
+
+      std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
+      int i = 0;
+      
+      for(cv::Mat mat: packet->frames){
+        i++;
+        printf("frame: %d",i);
+        resize(mat, mat, cv::Size(640, 480));
+
+        std::vector<unsigned char> res_vec;
+        cv::imencode(".jpg", mat, res_vec, param);
+        std::ofstream lelee ("test" + std::to_string(i)+ ".jpg", std::ios::out | std::ios::app | std::ios::binary);
+        const char* a = reinterpret_cast<const char*>(&res_vec[0]);
+        lelee.write(a,res_vec.size());
+        
+        
+      }
+      
+      ///
+
+
 
 #ifdef DEBUG
    //   std::cout << "Ventilator | Send To Worker | SEQ : " << frame.seq_buf 
