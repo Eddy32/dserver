@@ -13,6 +13,7 @@
 #include "pose_detector.hpp"
 #include "yolo_detector.hpp"
 #include <opencv2/opencv.hpp>			
+//#include "frame.hpp"
 #include "frame.hpp"
 #include "packet.hpp"
 
@@ -21,8 +22,8 @@ void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-SharedQueue<Packet*> unprocessed_frame_queue;
-SharedQueue<Packet*> processed_frame_queue;
+SharedQueue<Packet> unprocessed_frame_queue;
+SharedQueue<Packet> processed_frame_queue;
 //SharedQueue<Packet*> test;
 
 // pool
