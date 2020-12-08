@@ -25,7 +25,7 @@ SharedQueue<Frame> unprocessed_frame_queue;
 SharedQueue<Frame> processed_frame_queue;;
 
 // pool
-Frame_pool *frame_pool;
+// Frame_pool *frame_pool;
 
 // signal
 volatile bool exit_flag = false;
