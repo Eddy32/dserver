@@ -25,7 +25,7 @@ void *sock_push;
 //SharedQueue<Frame> processed_frame_queue;;
 
 // pool
-// Frame_pool *frame_pool;
+ Frame_pool *frame_pool;
 
 // signal
 volatile bool exit_flag = false;
@@ -116,10 +116,10 @@ int main(int argc, char *argv[])
   assert(ret != -1);
 
   // frame__pool
-  //frame_pool = new Frame_pool(5000);
-  new CMemPool(5000, 100);
-  new CMemPool(5000, 76800);
-  new CMemPool(5000, 25600);
+  frame_pool = new Frame_pool(5000);
+  //new CMemPool(5000, 100);
+  //new CMemPool(5000, 76800);
+  //new CMemPool(5000, 25600);
   // Thread
   pthread_t recv_thread;
   if (pthread_create(&recv_thread, 0, recv_in_thread, 0))
