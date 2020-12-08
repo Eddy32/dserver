@@ -16,7 +16,7 @@ struct Frame {
 const int SEQ_BUF_LEN = 100;
 const int MSG_BUF_LEN = 76800;
 const int DET_BUF_LEN = 25600;	
-const int JSON_BUF_LEN = MSG_BUF_LEN * 2;
+const int JSON_BUF_LEN = 1000000;
 class Frame_pool
 {
 private:
