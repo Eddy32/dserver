@@ -82,9 +82,11 @@ void *send_in_thread(void *ptr)
   unsigned char json_buf[JSON_BUFF_SIZE];
   //Frame frame;
   Packet* packet;
+  Packet packs;
   while(!exit_flag) {
     if (frame_queue.size() > 0) {
-      packet = &(frame_queue.front());
+      packs = (frame_queue.front());
+      packet = &packs;
       frame_queue.pop_front();
 
 #ifdef DEBUG
