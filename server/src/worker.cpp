@@ -21,8 +21,8 @@ void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-SharedQueue<Frame> unprocessed_frame_queue;
-SharedQueue<Frame> processed_frame_queue;;
+//SharedQueue<Frame> unprocessed_frame_queue;
+//SharedQueue<Frame> processed_frame_queue;;
 
 // pool
 // Frame_pool *frame_pool;
