@@ -60,25 +60,26 @@ void *recv_in_thread(void *ptr)
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
- // unsigned char json_buf[JSON_BUF_LEN];
- // Frame frame;
+  unsigned char json_buf[JSON_BUFF_SIZE];
+  Packet* packet;
 
   while(!exit_flag) {
- //   if (processed_frame_queue.size() > 0) {
-     /* frame = processed_frame_queue.front();
+    if (processed_frame_queue.size() > 0) {
+      packet = processed_frame_queue.front();
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
-      std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
-        << " LEN : " << frame.msg_len << std::endl;
+   //   std::cout << "Worker | Send To Sink | SEQ : " << frame.seq_buf
+    //    << " LEN : " << frame.msg_len << std::endl;
 #endif
-      send_json_len = frame_to_json(json_buf, frame);
+      send_json_len = packet_to_json(json_buf, packet);
       zmq_send(sock_push, json_buf, send_json_len, 0);
 
-      frame_pool->free_frame(frame); */
- //   }
+     
+    }
   }
 }
+
 
 int main(int argc, char *argv[])
 {
