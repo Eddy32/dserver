@@ -21,8 +21,8 @@ void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-//SharedQueue<Frame> unprocessed_frame_queue;
-//SharedQueue<Frame> processed_frame_queue;;
+SharedQueue<Frame> unprocessed_frame_queue;
+SharedQueue<Frame> processed_frame_queue;;
 
 // pool
 // Frame_pool *frame_pool;
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
   double det_time;
 
   while(!exit_flag) {
-  /*  // recv from ven
+    // recv from ven
     if (unprocessed_frame_queue.size() > 0) {
       frame = unprocessed_frame_queue.front();
       unprocessed_frame_queue.pop_front();
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
 
       // push to processed frame_queue
       processed_frame_queue.push_back(frame);
-    }*/
+    }
   }
   
   //delete frame_pool;
