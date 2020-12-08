@@ -29,7 +29,7 @@ SharedQueue<Packet> processed_frame_queue;
 
 // pool
 // Frame_pool *frame_pool;
-
+std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
 // signal
 volatile bool exit_flag = false;
 void sig_handler(int s)
@@ -47,8 +47,21 @@ void *recv_in_thread(void *ptr)
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
     if (recv_json_len > 0) {
       packet = json_to_packet(json_buf);
-      printf("NUMERO DE FRAMES: %d",packet->frames.size());
-      printf("2\n");
+      //printf("NUMERO DE FRAMES: %d",packet->frames.size());
+      //printf("2\n");
+      for(cv::Mat mat: packet->frames){
+        i++;
+        printf("frame: %d",i);
+        resize(mat, mat, cv::Size(640, 480));
+
+        std::vector<unsigned char> res_vec;
+        cv::imencode(".jpg", mat, res_vec, param);
+        std::ofstream lelee ("test" + std::to_string(i)+ ".jpg", std::ios::out | std::ios::app | std::ios::binary);
+        const char* a = reinterpret_cast<const char*>(&res_vec[0]);
+        lelee.write(a,res_vec.size());
+        
+        
+      }
 #ifdef DEBUG
       //std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
       //  << " LEN : " << frame.msg_len << std::endl;
@@ -106,7 +119,7 @@ int main(int argc, char *argv[])
       cfg_path, weights_path, names_path, gpu_id, thresh);
 
   // opencv
-  std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
+  //std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
 
   // ZMQ
   int ret;

@@ -45,6 +45,7 @@ void *recv_in_thread(void *ptr)
 
       ///
       int i = 0;
+      /*
       for(cv::Mat mat: packet->frames){
         i++;
         printf("frame: %d",i);
@@ -58,6 +59,7 @@ void *recv_in_thread(void *ptr)
         
         
       }
+      */
       ///
 
 
