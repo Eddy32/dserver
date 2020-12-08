@@ -5,13 +5,14 @@
 #include <pthread.h>
 #include "share_queue.h"
 #include "frame.hpp"
+#include "packet.hpp"
 
 // ZMQ
 void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-SharedQueue<Frame> frame_queue;
+SharedQueue<Packet> frame_queue;
 
 // pool
 Frame_pool *frame_pool;
@@ -27,20 +28,18 @@ void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
   unsigned char json_buf[JSON_BUF_LEN];
-  Frame frame;
+  //Frame frame;
 
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
 
     if (recv_json_len > 0) {
-      frame = frame_pool->alloc_frame();
-      json_buf[recv_json_len] = '\0';
-      json_to_frame(json_buf, frame);
+      Packet packet = json_to_packet(json_buf);
 #ifdef DEBUG
       std::cout << "Ventilator | Recv From Client | SEQ : " << frame.seq_buf 
         << " LEN : " << frame.msg_len << std::endl;
 #endif
-      frame_queue.push_back(frame);
+      frame_queue.push_back(packet);
     }
   }
 }
@@ -49,21 +48,23 @@ void *send_in_thread(void *ptr)
 {
   int send_json_len;
   unsigned char json_buf[JSON_BUF_LEN];
-  Frame frame;
+  //Frame frame;
+  Packet packet;
   while(!exit_flag) {
     if (frame_queue.size() > 0) {
-      frame = frame_queue.front();
+      packet = frame_queue.front();
       frame_queue.pop_front();
 
 #ifdef DEBUG
       std::cout << "Ventilator | Send To Worker | SEQ : " << frame.seq_buf 
         << " LEN : " << frame.msg_len << std::endl;
 #endif
-
-      send_json_len = frame_to_json(json_buf, frame);
+      
+      send_json_len = packet_to_json(json_buf, packet);
+      printf("Size buf: %d Size data: %d\n\n",JSON_BUF_LEN,send_json_len);
       zmq_send(sock_push, json_buf, send_json_len, 0);
 
-      frame_pool->free_frame(frame);
+      //frame_pool->free_frame(frame);
     }
   }
 }
