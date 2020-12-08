@@ -7,7 +7,6 @@
 #include <pthread.h>
 #include <csignal>
 #include "share_queue.h"
-#include "frame.hpp"
 #include "args.hpp"
 #include "yolo_v2_class.hpp"
 #include "DetectorInterface.hpp"
@@ -15,14 +14,15 @@
 #include "yolo_detector.hpp"
 #include <opencv2/opencv.hpp>			
 #include "packet.hpp"
+#include "mem_pool.hpp"
 
 // ZMQ
 void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-SharedQueue<Frame> unprocessed_frame_queue;
-SharedQueue<Frame> processed_frame_queue;;
+SharedQueue<Packet*> unprocessed_frame_queue;
+SharedQueue<Packet*> processed_frame_queue;;
 
 // pool
 // Frame_pool *frame_pool;
@@ -37,11 +37,11 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char json_buf[JSON_BUF_LEN];
+  unsigned char json_buf[3000000];
   //Frame frame;
 
   while(!exit_flag) {
-    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
+    recv_json_len = zmq_recv(sock_pull, json_buf, 3000000, ZMQ_NOBLOCK);
 /*
     if (recv_json_len > 0) {
       frame = frame_pool->alloc_frame();
@@ -60,7 +60,7 @@ void *recv_in_thread(void *ptr)
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char json_buf[JSON_BUF_LEN];
+ // unsigned char json_buf[JSON_BUF_LEN];
  // Frame frame;
 
   while(!exit_flag) {
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
   //PoseDetector pose_detector(cfg_path, weights_path, gpu_id);
 
   // frame
-  Frame frame;
+  //Frame frame;
   int frame_len;
   int frame_seq;
   unsigned char *frame_buf_ptr;
