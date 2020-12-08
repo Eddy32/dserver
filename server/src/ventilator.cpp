@@ -15,7 +15,7 @@ void *sock_push;
 
 
 // ShareQueue
-SharedQueue<Packet*> frame_queue;
+SharedQueue<Packet> frame_queue;
 
 // pool
 //Frame_pool *frame_pool;
@@ -71,7 +71,7 @@ void *recv_in_thread(void *ptr)
        // << " LEN : " << frame.msg_len << std::endl;
        printf("Dados RECEBIDOS\n");
 #endif
-      frame_queue.push_back(packet);
+      frame_queue.push_back(*packet);
     }
   }
 }
@@ -84,7 +84,7 @@ void *send_in_thread(void *ptr)
   Packet* packet;
   while(!exit_flag) {
     if (frame_queue.size() > 0) {
-      packet = frame_queue.front();
+      packet = &(frame_queue.front());
       frame_queue.pop_front();
 
 #ifdef DEBUG

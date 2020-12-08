@@ -41,14 +41,16 @@ void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
   unsigned char json_buf[JSON_BUFF_SIZE];
-  Packet* packet;
+  
 
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
     if (recv_json_len > 0) {
-      packet = json_to_packet(json_buf);
+      Packet* packet = json_to_packet(json_buf);
       //printf("NUMERO DE FRAMES: %d",packet->frames.size());
       //printf("2\n");
+
+      /////
       int i =0;
       std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
       for(cv::Mat mat: packet->frames){
@@ -61,9 +63,10 @@ void *recv_in_thread(void *ptr)
         std::ofstream lelee ("test" + std::to_string(i)+ ".jpg", std::ios::out | std::ios::app | std::ios::binary);
         const char* a = reinterpret_cast<const char*>(&res_vec[0]);
         lelee.write(a,res_vec.size());
-        
-        
       }
+    /////////
+
+
 #ifdef DEBUG
       //std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
       //  << " LEN : " << frame.msg_len << std::endl;
