@@ -13,6 +13,7 @@
 #include "DetectorInterface.hpp"
 #include "pose_detector.hpp"
 #include "yolo_detector.hpp"
+#include "mem_pool.hpp"
 #include <opencv2/opencv.hpp>
 #include <fstream>	
 
