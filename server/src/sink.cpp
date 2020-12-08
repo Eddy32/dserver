@@ -83,6 +83,7 @@ void *send_in_thread(void *ptr)
 
 int main()
 {
+  printf("CHANGE");
   // ZMQ
   int ret;
   void *context = zmq_ctx_new();
