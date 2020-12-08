@@ -75,7 +75,7 @@ public:
     float nms = .4;
     bool wait_stream;
 
-    LIB_API Detector(std::string cfg_filename, std::string weight_filename, int gpu_id = 0);
+    LIB_API Detector(std::string cfg_filename, std::string weight="yolov4tiny.weights", int gpu_id = 0);
     LIB_API ~Detector();
 
     LIB_API std::vector<bbox_t> detect(std::string image_filename, float thresh = 0.2, bool use_mean = false);
