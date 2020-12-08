@@ -1,21 +1,24 @@
+
+///////////
 #include <zmq.h>
 #include <iostream>
 #include <cassert>
 #include <csignal>
 #include <pthread.h>
 #include "share_queue.h"
-#include "frame.hpp"
 #include "packet.hpp"
 
 // ZMQ
 void *sock_pull;
 void *sock_push;
 
+using namespace Packet;
+
 // ShareQueue
-SharedQueue<Packet> frame_queue;
+SharedQueue<Packet*> frame_queue;
 
 // pool
-Frame_pool *frame_pool;
+//Frame_pool *frame_pool;
 
 // signal
 volatile bool exit_flag = false;
@@ -34,7 +37,7 @@ void *recv_in_thread(void *ptr)
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
 
     if (recv_json_len > 0) {
-      Packet packet = json_to_packet(json_buf);
+      Packet* packet = json_to_packet(json_buf);
 #ifdef DEBUG
       std::cout << "Ventilator | Recv From Client | SEQ : " << frame.seq_buf 
         << " LEN : " << frame.msg_len << std::endl;
@@ -84,7 +87,7 @@ int main()
   assert(ret != -1);
 
   // frame_pool
-  frame_pool = new Frame_pool();
+  //frame_pool = new Frame_pool();
 
   // Thread
   pthread_t recv_thread;
@@ -100,7 +103,7 @@ int main()
 
   while(!exit_flag);
 
-  delete frame_pool;
+  //delete frame_pool;
   zmq_close(sock_pull);
   zmq_close(sock_push);
   zmq_ctx_destroy(context);
