@@ -21,9 +21,9 @@ void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-//SharedQueue<Frame> unprocessed_frame_queue;
-//SharedQueue<Frame> processed_frame_queue;
-SharedQueue<Packet*> test;
+SharedQueue<Frame> unprocessed_frame_queue;
+SharedQueue<Frame> processed_frame_queue;
+//SharedQueue<Packet*> test;
 
 // pool
 // Frame_pool *frame_pool;
@@ -118,9 +118,9 @@ int main(int argc, char *argv[])
 
   // frame__pool
   //frame_pool = new Frame_pool(5000);
-  new CMemPool(5000, 100);
-  new CMemPool(5000, 76800);
-  new CMemPool(5000, 25600);
+  //new CMemPool(5000, 100);
+  //new CMemPool(5000, 76800);
+  //new CMemPool(5000, 25600);
   // Thread
   pthread_t recv_thread;
   if (pthread_create(&recv_thread, 0, recv_in_thread, 0))
