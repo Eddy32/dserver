@@ -65,7 +65,7 @@ void *send_in_thread(void *ptr)
 
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
-      packet = processed_frame_queue.front();
+      packet = &(processed_frame_queue.front());
       processed_frame_queue.pop_front();
 
 #ifdef DEBUG
