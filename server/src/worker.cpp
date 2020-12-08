@@ -13,16 +13,15 @@
 #include "pose_detector.hpp"
 #include "yolo_detector.hpp"
 #include <opencv2/opencv.hpp>			
-#include "packet.hpp"
-#include "mem_pool.hpp"
+#include "frame.hpp"
 
 // ZMQ
 void *sock_pull;
 void *sock_push;
 
 // ShareQueue
-SharedQueue<Packet*> unprocessed_frame_queue;
-SharedQueue<Packet*> processed_frame_queue;;
+SharedQueue<Frame> unprocessed_frame_queue;
+SharedQueue<Frame> processed_frame_queue;;
 
 // pool
 // Frame_pool *frame_pool;
