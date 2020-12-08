@@ -12,7 +12,6 @@
 void *sock_pull;
 void *sock_push;
 
-using namespace Packet;
 
 // ShareQueue
 SharedQueue<Packet*> frame_queue;
@@ -30,11 +29,11 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char json_buf[JSON_BUF_LEN];
+  unsigned char json_buf[JSON_BUFF_SIZE];
   //Frame frame;
 
   while(!exit_flag) {
-    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
+    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
 
     if (recv_json_len > 0) {
       Packet* packet = json_to_packet(json_buf);
@@ -50,9 +49,9 @@ void *recv_in_thread(void *ptr)
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char json_buf[JSON_BUF_LEN];
+  unsigned char json_buf[JSON_BUFF_SIZE];
   //Frame frame;
-  Packet packet;
+  Packet* packet;
   while(!exit_flag) {
     if (frame_queue.size() > 0) {
       packet = frame_queue.front();
@@ -64,7 +63,7 @@ void *send_in_thread(void *ptr)
 #endif
       
       send_json_len = packet_to_json(json_buf, packet);
-      printf("Size buf: %d Size data: %d\n\n",JSON_BUF_LEN,send_json_len);
+      printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
       zmq_send(sock_push, json_buf, send_json_len, 0);
 
       //frame_pool->free_frame(frame);
