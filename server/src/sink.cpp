@@ -75,7 +75,7 @@ void *recv_in_thread(void *ptr)
         writer.write(mat);
       }
       */
-      processed_frame_queue.push_back(*packet):
+      processed_frame_queue.push_back(*packet);
 
       ////
 
