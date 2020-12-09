@@ -37,7 +37,7 @@ void *recv_in_thread(void *ptr)
   
   int idV =1;
   while(!exit_flag) {
-    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUF_LEN, ZMQ_NOBLOCK);
+    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
 
     if (recv_json_len > 0) {
        Packet* packet = json_to_packet(json_buf);
@@ -99,7 +99,7 @@ void *recv_in_thread(void *ptr)
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char json_buf[JSON_BUF_LEN];
+  unsigned char json_buf[JSON_BUFF_SIZE];
   Packet* packet;
   Packet packs;
 
