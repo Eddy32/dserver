@@ -62,6 +62,8 @@ void *recv_in_thread(void *ptr)
       */
       ////
 
+      //gravar video
+      /*
       writer.open("captura" + std::to_string(idV) + ".avi" ,CV_FOURCC('X','V','I','D'), 20, cv::Size(640, 480), true);
       if (!writer.isOpened()) {
       printf("BRO ESTOU COM TRIPS!");
@@ -72,6 +74,8 @@ void *recv_in_thread(void *ptr)
         printf("printing frame %d \n",idV);
         writer.write(mat);
       }
+      */
+      processed_frame_queue.push_back(*packet):
 
       ////
 
@@ -96,10 +100,14 @@ void *send_in_thread(void *ptr)
 {
   int send_json_len;
   unsigned char json_buf[JSON_BUF_LEN];
-  Frame frame;
+  Packet* packet;
+  Packet packs;
 
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
+      packs = (processed_frame_queue.front());
+      processed_frame_queue.pop_front();
+      packet = &packs;
      /* 
       frame = processed_frame_queue.front();
       processed_frame_queue.pop_front();
@@ -114,6 +122,10 @@ void *send_in_thread(void *ptr)
 
       frame_pool->free_frame(frame);
       */
+     send_json_len = packet_to_json(json_buf, packet);
+     printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
+     zmq_send(sock_pub, json_buf, send_json_len, 0);
+
     }
   }
 }
