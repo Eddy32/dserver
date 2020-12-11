@@ -41,7 +41,7 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char json_buf[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
   
 
   while(!exit_flag) {
@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
     fprintf(stderr, "usage: %s <cfg> <weights> <names> [-pose] [-gpu GPU_ID] [-thresh THRESH]\n", argv[0]);
     return 0;
   }
-  malloc(15360000);
   // signal
   std::signal(SIGINT, sig_handler);
 
