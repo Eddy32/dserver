@@ -44,7 +44,7 @@ void *recv_in_thread(void *ptr)
   
 
   while(!exit_flag) {
-    recv_json_len = zmq_recv(sock_pull, json_buf, 15360000, 0);
+    recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, 0);
     if (recv_json_len > 0) {
       Packet* packet = json_to_packet(json_buf);
       //printf("NUMERO DE FRAMES: %d",packet->frames.size());
