@@ -83,7 +83,7 @@ void *recv_in_thread(void *ptr)
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char json_buf[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
   Packet* packet;
   Packet packs;
   while(!exit_flag) {
