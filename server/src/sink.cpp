@@ -32,7 +32,7 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char json_buf[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
   cv::VideoWriter writer;
   
   int idV =1;
@@ -99,7 +99,7 @@ void *recv_in_thread(void *ptr)
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char json_buf[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
   Packet* packet;
   Packet packs;
 

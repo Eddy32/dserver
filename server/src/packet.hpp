@@ -4,7 +4,7 @@
 #include <ctime>
 
 
-const int FRAMES_PER_SEND = 10;
+const int FRAMES_PER_SEND = 100;
 const int JSON_BUFF_SIZE = 76800*2*100;
 
 class Packet
