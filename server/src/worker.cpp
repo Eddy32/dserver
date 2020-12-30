@@ -25,11 +25,6 @@ void *sock_push;
 // ShareQueue
 SharedQueue<Packet> unprocessed_frame_queue;
 SharedQueue<Packet> processed_frame_queue;
-//SharedQueue<Packet*> test;
-
-
-// pool
-// Frame_pool *frame_pool;
 
 // signal
 volatile bool exit_flag = false;
@@ -41,16 +36,13 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   
 
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, 0);
     if (recv_json_len > 0) {
       Packet* packet = json_to_packet(json_buf);
-      //printf("NUMERO DE FRAMES: %d",packet->frames.size());
-      //printf("2\n");
-
       /////
       /*
       int i =0;
@@ -68,8 +60,6 @@ void *recv_in_thread(void *ptr)
       }
       */
     /////////
-
-
 #ifdef DEBUG
       //std::cout << "Worker | Recv From Ventilator | SEQ : " << frame.seq_buf 
       //  << " LEN : " << frame.msg_len << std::endl;
@@ -78,12 +68,14 @@ void *recv_in_thread(void *ptr)
     printf("3\n");
     }
   }
+  free(json_buf);
+
 }
 
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   Packet* packet;
   Packet packs;
   while(!exit_flag) {
@@ -104,6 +96,8 @@ void *send_in_thread(void *ptr)
      
     }
   }
+  free(json_buf);
+
 }
 
 
@@ -189,53 +183,35 @@ int main(int argc, char *argv[])
       unprocessed_frame_queue.pop_front();
       packet = &packs;
 
-      //frame_seq = atoi((const char*)frame.seq_buf);
-      //frame_len = frame.msg_len;
-      //frame_buf_ptr = frame.msg_buf;
-
       // darknet
       // unsigned char array -> vector
       std::vector<cv::Mat> matBoxes;
       for(cv::Mat mat: packet->frames){
         printf("MENSAGEM: %d, Frame: %d",msg,iframe);
         iframe+=1;
-        //std::vector<unsigned char> raw_vec(frame_buf_ptr, frame_buf_ptr + frame_len);
         resize(mat, mat, cv::Size(640, 480));
-      // vector -> mat
-      //cv::Mat raw_mat = cv::imdecode(cv::Mat(raw_vec), 1);
 
-      // detect
-      time_begin = std::chrono::steady_clock::now();
-      detector->detect(mat, thresh);
-      time_end = std::chrono::steady_clock::now();
-      det_time = std::chrono::duration <double, std::milli> (time_end - time_begin).count();
+        // detect
+        time_begin = std::chrono::steady_clock::now();
+        detector->detect(mat, thresh);
+        time_end = std::chrono::steady_clock::now();
+        det_time = std::chrono::duration <double, std::milli> (time_end - time_begin).count();
 
-#ifdef DEBUG
-      //n std::cout << "Darknet | Detect | SEQ : " << frame.seq_buf << " Time : " << det_time << "ms" << std::endl;
-#endif
+        #ifdef DEBUG
+          //n std::cout << "Darknet | Detect | SEQ : " << frame.seq_buf << " Time : " << det_time << "ms" << std::endl;
+        #endif
 
-      // detect result to jsons
-      //std::string det_json = detector->det_to_json(frame_seq);
-      //frame.det_len = det_json.size();
-      //memcpy(frame.det_buf, det_json.c_str(), frame.det_len);
-      //frame.det_buf[frame.det_len] = '\0';
+        // detect result (bounding box OR Skeleton) draw
+        detector->draw(mat);
+        matBoxes.push_back(mat.clone());
+        // mat -> vector
+        
+        std::vector<unsigned char> res_vec;
+        cv::imencode(".jpg", mat, res_vec, param);
 
-      // detect result (bounding box OR Skeleton) draw
-      detector->draw(mat);
-      matBoxes.push_back(mat.clone());
-      // mat -> vector
-      
-      std::vector<unsigned char> res_vec;
-      cv::imencode(".jpg", mat, res_vec, param);
-      //std::ofstream sadd ("detett" + std::to_string(msg)+ "_" + std::to_string(iframe) + ".jpg", std::ios::out | std::ios::app | std::ios::binary);
-      //const char* a = reinterpret_cast<const char*>(&res_vec[0]);
-      //sadd.write(a,res_vec.size());
       }
-      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes);
-      // vector -> frame array
-      //frame.msg_len = res_vec.size();
-      //std::copy(res_vec.begin(), res_vec.end(), frame.msg_buf);
 
+      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes);
       // push to processed frame_queue
       processed_frame_queue.push_back(*packetProcessed);
       

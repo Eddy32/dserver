@@ -22,7 +22,7 @@ DEPS = $(wildcard src/*.h*)
 EXEC1 = ventilator
 EXEC1_OBJ = ventilator.o frame.o mem_pool.o base64.o packet.o
 EXEC1_OBJS = $(addprefix $(OBJDIR), $(EXEC1_OBJ))
-
+	
 EXEC2 = worker
 EXEC2_OBJ = worker.o yolo_detector.o pose_detector.o people.o frame.o mem_pool.o base64.o args.o packet.o
 EXEC2_OBJS = $(addprefix $(OBJDIR), $(EXEC2_OBJ))

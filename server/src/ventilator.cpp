@@ -63,12 +63,7 @@ void *recv_in_thread(void *ptr)
       */
       ///
 
-
-
-
 #ifdef DEBUG
-     // std::cout << "Ventilator | Recv From Client | SEQ : " << frame.seq_buf 
-       // << " LEN : " << frame.msg_len << std::endl;
        printf("Dados RECEBIDOS\n");
 #endif
       frame_queue.push_back(*packet);
@@ -88,7 +83,7 @@ void *send_in_thread(void *ptr)
       packs = (frame_queue.front());
       frame_queue.pop_front();
       packet = &packs;
-      
+     
       ///
       /*
       std::vector<int> param = {cv::IMWRITE_JPEG_QUALITY, 50 };
@@ -113,8 +108,6 @@ void *send_in_thread(void *ptr)
 
 
 #ifdef DEBUG
-   //   std::cout << "Ventilator | Send To Worker | SEQ : " << frame.seq_buf 
-    //    << " LEN : " << frame.msg_len << std::endl;
     printf("Dados ENVIADOS\n");
 #endif
       
