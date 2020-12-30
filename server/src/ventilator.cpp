@@ -33,7 +33,7 @@ void sig_handler(int s)
 void *recv_in_thread(void *ptr)
 {
   int recv_json_len;
-  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   //Frame frame;
 
   while(!exit_flag) {
@@ -69,12 +69,13 @@ void *recv_in_thread(void *ptr)
       frame_queue.push_back(*packet);
     }
   }
+  free(json_buf);
 }
 
 void *send_in_thread(void *ptr)
 {
   int send_json_len;
-  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*15360000);//[JSON_BUFF_SIZE];
+  unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   //Frame frame;
   Packet* packet;
   Packet packs;
@@ -118,6 +119,7 @@ void *send_in_thread(void *ptr)
       //frame_pool->free_frame(frame);
     }
   }
+  free(json_buf);
 }
 int main()
 {
