@@ -82,7 +82,7 @@ void *recv_in_thread(void *ptr)
 
         if (!AwsDoc::S3::PutObject(bucket_name, object_name, region, path)) {
 
-            return 1;
+            printf("Nao dei upload para o bucket #ohmaninho");
         }
 
       idV++;
