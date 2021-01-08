@@ -2,7 +2,7 @@ DEBUG = 1
 
 CPP = g++
 COMMON = -DOPENCV
-CXXFLAGS = -g -Wall -O2 -std=c++11 -DOPENCV
+CXXFLAGS = -g -Wall -O2 -std=c++11 -DOPENCV -L./ -lAWS -Wl,-R./
 LDFLAGS = -lstdc++ -lpthread -lzmq -lrt -ltbb -ldarknet
 
 CXXFLAGS += `pkg-config --cflags json-c`
@@ -28,7 +28,7 @@ EXEC2_OBJ = worker.o yolo_detector.o pose_detector.o people.o frame.o mem_pool.o
 EXEC2_OBJS = $(addprefix $(OBJDIR), $(EXEC2_OBJ))
 
 EXEC3 = sink
-EXEC3_OBJ = sink.o frame.o mem_pool.o base64.o packet.o
+EXEC3_OBJ = sink.o frame.o mem_pool.o base64.o packet.o libAWS.so   
 EXEC3_OBJS = $(addprefix $(OBJDIR), $(EXEC3_OBJ))
 
 OBJS = $(EXEC1_OBJS) $(EXEC2_OBJS) $(EXEC3_OBJS)
