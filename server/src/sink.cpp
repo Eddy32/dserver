@@ -10,6 +10,10 @@
 #include "share_queue.h"
 #include "frame.hpp"
 #include "packet.hpp"
+#include "include/awsdoc/s3/s3_examples.h"
+
+
+
 
 // ZMQ
 void *sock_pull;
@@ -59,18 +63,30 @@ void *recv_in_thread(void *ptr)
       */
 
       //gravar video
-      /*
-      writer.open("captura" + std::to_string(idV) + ".avi" ,CV_FOURCC('X','V','I','D'), 20, cv::Size(640, 480), true);
+      
+      writer.open("captura" + std::to_string(idV) + ".mov" ,CV_FOURCC('m','p','4','v'), 20, cv::Size(640, 480), true);
       if (!writer.isOpened()) {
       printf("BRO ESTOU COM TRIPS!");
       }
-      idV+=1;
+      
 
       for(cv::Mat mat: packet->frames){
         printf("printing frame %d \n",idV);
         writer.write(mat);
       }
-      */
+
+      const std::string bucket_name = "skeyestreammedia";
+        const std::string object_name = "captura" + std::to_string(idV) + ".mov";
+        const std::string region = "eu-west-3";
+        const std::string path = "cams/08/01/20/";
+
+        if (!AwsDoc::S3::PutObject(bucket_name, object_name, region, path)) {
+
+            return 1;
+        }
+
+      idV++;
+
       processed_frame_queue.push_back(*packet);
 
       ////
@@ -103,7 +119,7 @@ void *send_in_thread(void *ptr)
 
     }
   }
-  free(json_buf);
+  //free(json_buf);
 }
 
 
@@ -111,6 +127,9 @@ int main()
 {
   printf("CHANGE");
   // ZMQ
+
+  AwsDoc::S3::init();
+
   int ret;
   void *context = zmq_ctx_new();
 
