@@ -2,7 +2,7 @@ DEBUG = 1
 
 CPP = g++
 COMMON = -DOPENCV
-CXXFLAGS = -g -Wall -O2 -std=c++11 -DOPENCV -L./ -lAWS -Wl,-R./
+CXXFLAGS = -g -Wall -O2 -std=c++11 -DOPENCV -L./ -Wl,-R./
 LDFLAGS = -lstdc++ -lpthread -lzmq -lrt -ltbb -ldarknet
 
 CXXFLAGS += `pkg-config --cflags json-c`
