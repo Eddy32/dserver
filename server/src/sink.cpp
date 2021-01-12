@@ -12,6 +12,11 @@
 #include "packet.hpp"
 #include "include/awsdoc/s3/s3_examples.h"
 
+#include <iostream>
+#include <string>
+#include <curl/curl.h>
+#include <time.h>
+
 
 
 
@@ -35,6 +40,8 @@ void sig_handler(int s)
 
 void *recv_in_thread(void *ptr)
 {
+  time_t theTime;
+  struct tm *aTime;
   int recv_json_len;
   unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   cv::VideoWriter writer;
@@ -75,17 +82,64 @@ void *recv_in_thread(void *ptr)
         writer.write(mat);
       }
 
+      ////
+
+      ///Enviar para aws -> s3 bucket
+
+      time_t theTime = time(NULL);
+      struct tm *aTime = localtime(&theTime);
+
+
       const std::string bucket_name = "skeyestreammedia";
-        const std::string object_name = "captura" + std::to_string(idV) + ".mov";
-        const std::string region = "eu-west-3";
-        const std::string path = "cams/08/01/20/";
+      const std::string object_name = "captura" + std::to_string(idV) + ".mov";
+      const std::string region = "eu-west-3";
+      const std::string path = "cams/" + std::to_string(aTime->tm_year) + "/" + std::to_string((aTime->tm_mon)+1) + "/"std::to_string(aTime->tm_mday)+"/" ;
 
-        if (!AwsDoc::S3::PutObject(bucket_name, object_name, region, path)) {
+      if (!AwsDoc::S3::PutObject(bucket_name, object_name, region, path)) {
 
-            printf("Nao dei upload para o bucket #ohmaninho");
-        }
+          printf("Nao dei upload para o bucket #ohmaninho");
+      }
 
+      //// Post da deteção
+      CURL *hnd;
+      struct curl_slist *slist1;
+      std::string idUser = "5fcfa4212b4ba8001770990a";
+      std::string idCamera = "5fd0f3065518b43ad7956ab5";
+      std::string timestamp = "13/03/2000";
+      std::string classes = "[\"person\", \"cat\"]";
+      std::string url = "https://skeyestreammedia.s3.eu-west-3.amazonaws.com/" + path + object_name; 
+      std::string jsonstr = "{\"idUser\": \"" + idUser +
+      "\",\"idCamera\": \""+ idCamera +
+            "\",\"timestamp\":\""+ timestamp +
+            "\",\"classes\": " + classes  +
+            ",\"urlVideo\": \""+   url   +
+            "\"}";
+
+      slist1 = NULL;
+      slist1 = curl_slist_append(slist1, "Content-Type: application/json");
+
+      hnd = curl_easy_init();
+      curl_easy_setopt(hnd, CURLOPT_URL, "http://backend-notification-service.herokuapp.com/notifications/yolo");
+      curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
+      curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, jsonstr.c_str());
+      curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.38.0");
+      curl_easy_setopt(hnd, CURLOPT_HTTPHEADER, slist1);
+      curl_easy_setopt(hnd, CURLOPT_MAXREDIRS, 50L);
+      curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "POST");
+      curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
+
+      ret = curl_easy_perform(hnd);
+
+      curl_easy_cleanup(hnd);
+      hnd = NULL;
+      curl_slist_free_all(slist1);
+      slist1 = NULL;
+
+
+
+  
       idV++;
+
 
       processed_frame_queue.push_back(*packet);
 
