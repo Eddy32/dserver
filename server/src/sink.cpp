@@ -71,7 +71,7 @@ void *recv_in_thread(void *ptr)
 
       //gravar video
       
-      writer.open("captura" + std::to_string(idV) + ".mov" ,CV_FOURCC('m','p','4','v'), 20, cv::Size(640, 480), true);
+      writer.open("cap" + std::to_string(idV) + ".mov" ,CV_FOURCC('m','p','4','v'), 20, cv::Size(640, 480), true);
       if (!writer.isOpened()) {
       printf("BRO ESTOU COM TRIPS!");
       }
@@ -91,7 +91,7 @@ void *recv_in_thread(void *ptr)
 
 
       const std::string bucket_name = "skeyestreammedia";
-      const std::string object_name = "captura" + std::to_string(idV) + ".mov";
+      const std::string object_name = "cap" + std::to_string(idV) + ".mov";
       const std::string region = "eu-west-3";
       const std::string path = "cams/" + std::to_string(aTime->tm_year) + "/" + std::to_string((aTime->tm_mon)+1) + "/"std::to_string(aTime->tm_mday)+"/" ;
 
