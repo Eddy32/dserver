@@ -101,6 +101,7 @@ void *recv_in_thread(void *ptr)
       }
 
       //// Post da deteção
+      CURLcode ret;
       CURL *hnd;
       struct curl_slist *slist1;
       std::string idUser = "5fcfa4212b4ba8001770990a";
