@@ -93,7 +93,7 @@ void *recv_in_thread(void *ptr)
       const std::string bucket_name = "skeyestreammedia";
       const std::string object_name = "cap" + std::to_string(idV) + ".mov";
       const std::string region = "eu-west-3";
-      const std::string path = "cams/" + std::to_string(aTime->tm_year) + "/" + std::to_string((aTime->tm_mon)+1) + "/"std::to_string(aTime->tm_mday)+"/" ;
+      const std::string path = "cams/" + std::to_string(aTime->tm_year) + "/" + std::to_string((aTime->tm_mon)+1) + "/" + std::to_string(aTime->tm_mday)+"/" ;
 
       if (!AwsDoc::S3::PutObject(bucket_name, object_name, region, path)) {
 
