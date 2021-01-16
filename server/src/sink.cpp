@@ -174,24 +174,17 @@ void *send_in_thread(void *ptr)
       processed_frame_queue.pop_front();
       packet = &packs;
 
+      
+
      for(cv::Mat mat: packet->frames){
         int height = mat.rows;
         int width = mat.cols;
         printf("ALT: %d + LARRG: %d",height,width);
         cv::vector<uchar> buffer;
         cv::vector<uchar> topic ;
-
-        std::string bl= "20\\";
-        topic.assign(bl.begin(), bl.end());
-        topic.insert(topic.begin(), bl.begin(), bl.end());
-        topic.push_back(bl[0]); 
-        topic.push_back(bl[1]); 
-        topic.push_back(bl[2]);
-
-
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d \n",buffer.size());
-        std::copy(buffer.begin(), buffer.end(), std::back_inserter(topic));
+        zmq_send(stream_pub, "20", 2, ZMQ_SNDMORE);
         zmq_send(stream_pub, buffer.data(), buffer.size(), ZMQ_NOBLOCK);
       }
 
