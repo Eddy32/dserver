@@ -187,7 +187,7 @@ void *send_in_thread(void *ptr)
         cv::vector<uchar> topic ;
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d \n",buffer.size());
-        const* void topico = std::to_string(i);
+        const *void topico = std::to_string(i);
         zmq_send(stream_pub,topico, 2, ZMQ_SNDMORE);
         zmq_send(stream_pub, buffer.data(), buffer.size(), ZMQ_NOBLOCK);
       }
