@@ -179,8 +179,13 @@ void *send_in_thread(void *ptr)
         int width = mat.cols;
         printf("ALT: %d + LARRG: %d",height,width);
         cv::vector<uchar> buffer;
+        cv::vector<uchar> topic = "20\\";
+
+        
+
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d \n",buffer.size());
+        std::copy(buffer.begin(), buffer.end(), std::back_inserter(topic));
         zmq_send(stream_pub, buffer.data(), buffer.size(), ZMQ_NOBLOCK);
       }
 
