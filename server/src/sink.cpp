@@ -177,8 +177,9 @@ void *send_in_thread(void *ptr)
       
       int i = 18;
      for(cv::Mat mat: packet->frames){
+        
         if(i>=21)
-          i=18;
+         i = 18;
         i++;
         int height = mat.rows;
         int width = mat.cols;
@@ -187,8 +188,10 @@ void *send_in_thread(void *ptr)
         cv::vector<uchar> topic ;
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d \n",buffer.size());
-        const *void topico = std::to_string(i);
-        zmq_send(stream_pub,topico, 2, ZMQ_SNDMORE);
+        if(i==20)
+          zmq_send(stream_pub,"20", 2, ZMQ_SNDMORE);
+        else
+          zmq_send(stream_pub,"18", 2, ZMQ_SNDMORE);
         zmq_send(stream_pub, buffer.data(), buffer.size(), ZMQ_NOBLOCK);
       }
 
