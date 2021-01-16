@@ -22,7 +22,10 @@
 
 // ZMQ
 void *sock_pull;
-void *sock_pub;
+void *sock_pub; 
+
+void *stream_pub;
+
 
 // ShareQueue
 //tbb::concurrent_hash_map<int, Frame> frame_map;
@@ -97,7 +100,7 @@ void *recv_in_thread(void *ptr)
 
       if (!AwsDoc::S3::PutObject(bucket_name, object_name, region, path)) {
 
-          printf("Nao dei upload para o bucket #ohmaninho");
+          printf("Nao dei upload para o bucket ");
       }
 
       //// Post da deteção
@@ -137,8 +140,10 @@ void *recv_in_thread(void *ptr)
       slist1 = NULL;
 
 
-
+    //stream
   
+
+
       idV++;
 
 
@@ -168,9 +173,15 @@ void *send_in_thread(void *ptr)
       packs = (processed_frame_queue.front());
       processed_frame_queue.pop_front();
       packet = &packs;
+
      send_json_len = packet_to_json(json_buf, packet);
      printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
      zmq_send(sock_pub, json_buf, send_json_len, 0);
+
+     for(cv::Mat mat: packet->frames){
+        zmq_send(stream_pub,mat,send_json_len,0);
+      }
+
 
     }
   }
@@ -193,6 +204,10 @@ int main()
   assert(ret != -1);
 
   sock_pub = zmq_socket(context, ZMQ_PUB);
+
+  stream_pub = zmq_socket(context,ZMQ_PUB);
+  ret = zmq_bind(stream_pub,"tcp://*:3251"); 
+
   ret = zmq_bind(sock_pub, "tcp://*:5570");
   assert(ret != -1);
 
@@ -223,6 +238,7 @@ int main()
 
   zmq_close(sock_pull);
   zmq_close(sock_pub);
+  zmq_close(stream_pub);
   zmq_ctx_destroy(context);
   return 0;
 }
