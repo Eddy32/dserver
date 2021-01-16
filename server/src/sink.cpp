@@ -24,7 +24,7 @@
 void *sock_pull;
 void *sock_pub; 
 
-//void *stream_pub;
+void *stream_pub;
 
 
 // ShareQueue
@@ -178,11 +178,11 @@ void *send_in_thread(void *ptr)
      printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
      zmq_send(sock_pub, json_buf, send_json_len, 0);
 
-    /*
+    
      for(cv::Mat mat: packet->frames){
         zmq_send(stream_pub,&mat,send_json_len,0);
       }
-    */
+
 
     }
   }
@@ -206,8 +206,8 @@ int main()
 
   sock_pub = zmq_socket(context, ZMQ_PUB);
 
-  //stream_pub = zmq_socket(context,ZMQ_PUB);
-  //ret = zmq_bind(stream_pub,"tcp://*:3251"); 
+  stream_pub = zmq_socket(context,ZMQ_PUB);
+  ret = zmq_bind(stream_pub,"tcp://*:3251"); 
 
   ret = zmq_bind(sock_pub, "tcp://*:5570");
   assert(ret != -1);
@@ -239,7 +239,7 @@ int main()
 
   zmq_close(sock_pull);
   zmq_close(sock_pub);
-  //zmq_close(stream_pub);
+  zmq_close(stream_pub);
   zmq_ctx_destroy(context);
   return 0;
 }
