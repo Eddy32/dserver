@@ -24,7 +24,7 @@
 void *sock_pull;
 void *sock_pub; 
 
-void *stream_pub;
+//void *stream_pub;
 
 
 // ShareQueue
@@ -206,8 +206,8 @@ int main()
 
   sock_pub = zmq_socket(context, ZMQ_PUB);
 
-  stream_pub = zmq_socket(context,ZMQ_PUB);
-  ret = zmq_bind(stream_pub,"tcp://*:3251"); 
+  //stream_pub = zmq_socket(context,ZMQ_PUB);
+  //ret = zmq_bind(stream_pub,"tcp://*:3251"); 
 
   ret = zmq_bind(sock_pub, "tcp://*:5570");
   assert(ret != -1);
@@ -239,7 +239,7 @@ int main()
 
   zmq_close(sock_pull);
   zmq_close(sock_pub);
-  zmq_close(stream_pub);
+  //zmq_close(stream_pub);
   zmq_ctx_destroy(context);
   return 0;
 }
