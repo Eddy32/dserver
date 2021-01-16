@@ -81,7 +81,7 @@ void *recv_in_thread(void *ptr)
       
 
       for(cv::Mat mat: packet->frames){
-        printf("printing frame %d \n",idV);
+        //printf("printing frame %d \n",idV);
         writer.write(mat);
       }
 
