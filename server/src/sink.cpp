@@ -178,10 +178,11 @@ void *send_in_thread(void *ptr)
      printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
      zmq_send(sock_pub, json_buf, send_json_len, 0);
 
+    /*
      for(cv::Mat mat: packet->frames){
         zmq_send(stream_pub,&mat,send_json_len,0);
       }
-
+    */
 
     }
   }
