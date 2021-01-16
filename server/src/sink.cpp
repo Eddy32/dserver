@@ -179,7 +179,7 @@ void *send_in_thread(void *ptr)
      zmq_send(sock_pub, json_buf, send_json_len, 0);
 
      for(cv::Mat mat: packet->frames){
-        zmq_send(stream_pub,mat,send_json_len,0);
+        zmq_send(stream_pub,&mat,send_json_len,0);
       }
 
 
