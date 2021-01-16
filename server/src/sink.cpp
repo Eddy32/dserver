@@ -20,7 +20,6 @@
 
 
 
-
 // ZMQ
 void *sock_pull;
 void *sock_pub; 
@@ -188,7 +187,7 @@ void *send_in_thread(void *ptr)
         cv::vector<uchar> topic ;
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d \n",buffer.size());
-        zmq_send(stream_pub, to_string(i), 2, ZMQ_SNDMORE);
+        zmq_send(stream_pub, std::to_string(i), 2, ZMQ_SNDMORE);
         zmq_send(stream_pub, buffer.data(), buffer.size(), ZMQ_NOBLOCK);
       }
 
