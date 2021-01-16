@@ -179,8 +179,9 @@ void *send_in_thread(void *ptr)
      zmq_send(sock_pub, json_buf, send_json_len, 0);
 
     
-    size_t sizeInBytes = mat.total() * mat.elemSize();
+    
      for(cv::Mat mat: packet->frames){
+        size_t sizeInBytes = mat.total() * mat.elemSize();
         zmq_send(stream_pub,&mat,sizeInBytes,0);
       }
 
