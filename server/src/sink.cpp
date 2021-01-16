@@ -174,16 +174,17 @@ void *send_in_thread(void *ptr)
       processed_frame_queue.pop_front();
       packet = &packs;
 
-     send_json_len = packet_to_json(json_buf, packet);
-     printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
-     zmq_send(sock_pub, json_buf, send_json_len, 0);
-
-    
-    
      for(cv::Mat mat: packet->frames){
         size_t sizeInBytes = mat.total() * mat.elemSize();
+        printf("SIZE: %d \n",sizeInBytes);
         zmq_send(stream_pub,&mat,sizeInBytes,0);
       }
+
+     send_json_len = packet_to_json(json_buf, packet);
+     printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
+     //zmq_send(sock_pub, json_buf, send_json_len, 0);
+
+  
 
 
     }
