@@ -216,7 +216,7 @@ int main()
   stream_pub = zmq_socket(context,ZMQ_PUB);
   ret = zmq_bind(stream_pub,"tcp://*:5570"); 
 
-  ret = zmq_bind(sock_pub, "tcp://*:5570");
+  ret = zmq_bind(sock_pub, "tcp://*:5571");
   assert(ret != -1);
 
   // frame_pool
