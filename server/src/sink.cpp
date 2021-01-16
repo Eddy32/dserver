@@ -175,9 +175,12 @@ void *send_in_thread(void *ptr)
       packet = &packs;
 
      for(cv::Mat mat: packet->frames){
-        size_t sizeInBytes = mat.total() * mat.elemSize();
-        printf("SIZE: %d \n",sizeInBytes);
-        zmq_send(stream_pub,&mat,sizeInBytes,0);
+        int height = mat.rows;
+        int width = mat.cols;
+        cv::vector<uchar> buffer;
+        cv::imencode(".jpg", mat, buffer);
+        printf("SIZE: %d \n",buffer.size());
+        zmq_send(stream_pub, buffer.data(), buffer.size(), ZMQ_NOBLOCK);
       }
 
      send_json_len = packet_to_json(json_buf, packet);
