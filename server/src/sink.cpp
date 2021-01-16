@@ -177,6 +177,7 @@ void *send_in_thread(void *ptr)
      for(cv::Mat mat: packet->frames){
         int height = mat.rows;
         int width = mat.cols;
+        printf("ALT: %d + LARRG: %d",height,width);
         cv::vector<uchar> buffer;
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d \n",buffer.size());
