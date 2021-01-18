@@ -88,7 +88,7 @@ void *recv_in_thread(void *ptr)
       ////
 
       ///Enviar para aws -> s3 bucket
-
+      /*
       time_t theTime = time(NULL);
       struct tm *aTime = localtime(&theTime);
 
@@ -138,7 +138,7 @@ void *recv_in_thread(void *ptr)
       hnd = NULL;
       curl_slist_free_all(slist1);
       slist1 = NULL;
-
+      */
 
     //stream
   
@@ -187,12 +187,12 @@ void *send_in_thread(void *ptr)
         cv::vector<uchar> buffer;
         cv::vector<uchar> topic ;
         cv::imencode(".jpg", mat, buffer);
-        printf("SIZE: %d \n",buffer.size());
+        printf("SIZE: %d s\n",buffer.size());
         if(i==20)
           zmq_send(stream_pub,"20", 2, ZMQ_SNDMORE);
         else
           zmq_send(stream_pub,"18", 2, ZMQ_SNDMORE);
-        zmq_send(stream_pub, buffer.data(), buffer.size(), ZMQ_NOBLOCK);
+        zmq_send(stream_pub, buffer.data(), buffer.size(), 0);
       }
 
      send_json_len = packet_to_json(json_buf, packet);
