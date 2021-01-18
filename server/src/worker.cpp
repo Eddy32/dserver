@@ -128,11 +128,11 @@ int main(int argc, char *argv[])
   void *context = zmq_ctx_new();
 
   sock_pull = zmq_socket(context, ZMQ_PULL);
-  ret = zmq_connect(sock_pull, "ipc://unprocessed");
+  ret = zmq_connect(sock_pull, "ipc://127.0.0.1:50505");
   assert(ret != -1);
 
   sock_push = zmq_socket(context, ZMQ_PUSH);
-  ret = zmq_connect(sock_push, "ipc://processed");
+  ret = zmq_connect(sock_push, "tcp://192.168.85.225:44444");
   assert(ret != -1);
 
   // frame__pool
@@ -176,6 +176,7 @@ int main(int argc, char *argv[])
   int iframe = 0;
   Packet packs;
   while(!exit_flag) {
+    
     // recv from ven
     if (unprocessed_frame_queue.size() > 0) {
       msg+=1;
