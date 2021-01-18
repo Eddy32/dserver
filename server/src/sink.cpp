@@ -167,7 +167,7 @@ void *send_in_thread(void *ptr)
   unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   Packet* packet;
   Packet packs;
-
+  int i = 18;
   while(!exit_flag) {
     if (processed_frame_queue.size() > 0) {
       packs = (processed_frame_queue.front());
@@ -175,19 +175,22 @@ void *send_in_thread(void *ptr)
       packet = &packs;
 
       
-      int i = 18;
-     for(cv::Mat mat: packet->frames){
-        
-        if(i>=21)
+      
+      if(i>=21)
          i = 18;
         i++;
+      printf("I:: %d",i);
+      
+     for(cv::Mat mat: packet->frames){
+        
+        
         int height = mat.rows;
         int width = mat.cols;
         printf("ALT: %d + LARRG: %d",height,width);
         cv::vector<uchar> buffer;
         cv::vector<uchar> topic ;
         cv::imencode(".jpg", mat, buffer);
-        printf("SIZE: %d s\n",buffer.size());
+        printf("SIZE: %d  ----\n",buffer.size());
         if(i==20)
           zmq_send(stream_pub,"20", 2, ZMQ_SNDMORE);
         else
