@@ -202,6 +202,7 @@ void *send_in_thread(void *ptr)
      printf("Size buf: %d Size data: %d\n\n",JSON_BUFF_SIZE,send_json_len);
      //zmq_send(sock_pub, json_buf, send_json_len, 0);
 
+
   
 
 
@@ -222,7 +223,7 @@ int main()
   void *context = zmq_ctx_new();
 
   sock_pull = zmq_socket(context, ZMQ_PULL);
-  ret = zmq_bind(sock_pull, "ipc://processed");
+  ret = zmq_bind(sock_pull, "ipc://127.0.0.1:44444");
   assert(ret != -1);
 
   sock_pub = zmq_socket(context, ZMQ_PUB);
