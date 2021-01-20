@@ -90,7 +90,7 @@ void *recv_in_thread(void *ptr)
       }
 
 
-      system("ffmpeg -i " +  filename.c_str(); + " -vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4 " +  outputname.c_str);
+      system("ffmpeg -i " +  filename.c_str(); + " -vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4 " +  outputname.c_str());
 
       ////
 
