@@ -1,6 +1,3 @@
-#ifndef __FRAME_H
-#define __FRAME_H
-
 #include <opencv2/opencv.hpp>
 #include <ctime>
 
@@ -23,5 +20,3 @@ public:
 };
 int packet_to_json(unsigned char* buf, Packet* pacote);
 Packet* json_to_packet(void* buf);
-
-#endif

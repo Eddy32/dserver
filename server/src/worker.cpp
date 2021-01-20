@@ -212,7 +212,8 @@ int main(int argc, char *argv[])
 
       }
 
-      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes);
+      std::vector<std::string> classes;
+      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes,classes);
       // push to processed frame_queue
       processed_frame_queue.push_back(*packetProcessed);
       

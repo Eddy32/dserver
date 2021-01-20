@@ -48,7 +48,9 @@ void *recv_in_thread(void *ptr)
   int recv_json_len;
   unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   cv::VideoWriter writer;
-  
+  std::string filename;
+  std::string outputname;
+
   int idV =1;
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
@@ -73,8 +75,10 @@ void *recv_in_thread(void *ptr)
       */
 
       //gravar video
+      filename = "cap" + std::to_string(idV) + ".mov";
+      outputname = "cap" + std::to_string(idV) + ".mp4";
       
-      writer.open("cap" + std::to_string(idV) + ".mov" ,CV_FOURCC('m','p','4','v'), 20, cv::Size(640, 480), true);
+      writer.open(filename ,CV_FOURCC('m','p','4','v'), 20, cv::Size(640, 480), true);
       if (!writer.isOpened()) {
       printf("BRO ESTOU COM TRIPS!");
       }
@@ -85,24 +89,27 @@ void *recv_in_thread(void *ptr)
         writer.write(mat);
       }
 
+
+      system("ffmpeg -i" << filename << "-vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4" <<  outputname);
+
       ////
 
       ///Enviar para aws -> s3 bucket
-      /*
+      
       time_t theTime = time(NULL);
       struct tm *aTime = localtime(&theTime);
 
 
       const std::string bucket_name = "skeyestreammedia";
-      const std::string object_name = "cap" + std::to_string(idV) + ".mov";
+      const std::string object_name = outputname;
       const std::string region = "eu-west-3";
-      const std::string path = "cams/" + std::to_string(aTime->tm_year) + "/" + std::to_string((aTime->tm_mon)+1) + "/" + std::to_string(aTime->tm_mday)+"/" ;
+      const std::string path = "cams/" + packet->id_camera + "/" + std::to_string(aTime->tm_year) + "/" + std::to_string((aTime->tm_mon)+1) + "/" + std::to_string(aTime->tm_mday)+"/" ;
 
       if (!AwsDoc::S3::PutObject(bucket_name, object_name, region, path)) {
 
           printf("Nao dei upload para o bucket ");
       }
-
+      /*
       //// Post da deteção
       CURLcode ret;
       CURL *hnd;
