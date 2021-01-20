@@ -48,8 +48,8 @@ void *recv_in_thread(void *ptr)
   int recv_json_len;
   unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   cv::VideoWriter writer;
-  char filename[50];
-  char outputname[50];
+  std::string filename;
+  std::string outputname;
 
   int idV =1;
   while(!exit_flag) {
@@ -90,7 +90,7 @@ void *recv_in_thread(void *ptr)
       }
 
 
-      system("ffmpeg -i" + filename + "-vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4" +  outputname);
+      system("ffmpeg -i " + filename + " -vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4 " +  outputname);
 
       ////
 
