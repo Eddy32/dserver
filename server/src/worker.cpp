@@ -174,7 +174,8 @@ int main(int argc, char *argv[])
   int msg = 0;
   int iframe = 0;
   Packet packs;
-  std::vector<std::string> classesFound;   
+  std::vector<std::string> classesFound;
+  std::vector<std::string> classesTotal;
   while(!exit_flag) {
   
     // recv from ven
@@ -216,11 +217,16 @@ int main(int argc, char *argv[])
 
       }
       
-      classesFound.erase( std::unique( classesFound.begin(), classesFound.end() ), classesFound.end() );
-      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes,classesFound);
+      std::set<std::string> s( classesFound.begin(), classesFound.end() );
+      classesTotal.assign( s.begin(), s.end());
+      std::vector<std::string> vectorClasses = classesTotal;
+
+      //classesFound.erase( std::unique( classesFound.begin(), classesFound.end() ), classesFound.end() );
+      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes,vectorClasses);
       // push to processed frame_queue
       processed_frame_queue.push_back(*packetProcessed);
-      
+      classesTotal.clear();
+      classesFound.clear();
     }
   }
   

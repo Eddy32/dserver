@@ -75,11 +75,11 @@ void *recv_in_thread(void *ptr)
       */
 
       //gravar video
-      filename = "cap" + std::to_string(idV) + ".mov";
+      filename = "cap" + std::to_string(idV) + ".avi";
       outputname = "cap" + std::to_string(idV) + ".mp4";
-      comand = "ffmpeg -i " +  filename + " -vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4 " +  outputname;
+      comand = "ffmpeg -i " +  filename + " " +  outputname + "-y";
 
-      writer.open(filename ,CV_FOURCC('m','p','4','v'), 20, cv::Size(640, 480), true);
+      writer.open(filename ,CV_FOURCC('X','V','I','D'), 20, cv::Size(640, 480), true);
       if (!writer.isOpened()) {
       printf("BRO ESTOU COM TRIPS!");
       }
@@ -110,13 +110,13 @@ void *recv_in_thread(void *ptr)
 
           printf("Nao dei upload para o bucket ");
       }
-      /*
+      
       //// Post da deteção
       CURLcode ret;
       CURL *hnd;
       struct curl_slist *slist1;
-      std::string idUser = "5fcfa4212b4ba8001770990a";
-      std::string idCamera = "5fd0f3065518b43ad7956ab5";
+      std::string idUser = "600821072d723d0017842456";
+      std::string idCamera = "600821332d723d0017842457";
       std::string timestamp = "13/03/2000";
       std::string classes = "[\"person\", \"cat\"]";
       std::string url = "https://skeyestreammedia.s3.eu-west-3.amazonaws.com/" + path + object_name; 
@@ -146,7 +146,7 @@ void *recv_in_thread(void *ptr)
       hnd = NULL;
       curl_slist_free_all(slist1);
       slist1 = NULL;
-      */
+      
 
     //stream
   

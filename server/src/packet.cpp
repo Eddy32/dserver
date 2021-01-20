@@ -107,11 +107,12 @@ Packet* json_to_packet(void* buf){
     json_object_put(medi_array_obj);
   }
 
+
   //free
   json_object_put(id_user_json);
   json_object_put(id_camera_json);
   json_object_put(timestamp_json);
-  json_object_put(classes_json);
+  //json_object_put(classes_json);
 
   return new Packet(id_user,id_camera,time(0),frames, classes);
 }
