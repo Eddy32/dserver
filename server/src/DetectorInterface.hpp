@@ -6,7 +6,7 @@
 class DetectorInterface {
 public:
   virtual void detect(cv::Mat, float thresh) = 0;
-  virtual void draw(cv::Mat) = 0;
+  std::vector<std::string> draw(cv::Mat) = 0;
   virtual std::string det_to_json(int frame_id) = 0;
 };
   
