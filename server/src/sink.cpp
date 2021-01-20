@@ -91,7 +91,7 @@ void *recv_in_thread(void *ptr)
       }
 
 
-      system(comand);
+      system(comand.c_str());
 
       ////
 
