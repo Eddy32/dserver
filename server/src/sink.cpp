@@ -48,8 +48,8 @@ void *recv_in_thread(void *ptr)
   int recv_json_len;
   unsigned char* json_buf = (unsigned char *) malloc(sizeof(unsigned char)*JSON_BUFF_SIZE);//[JSON_BUFF_SIZE];
   cv::VideoWriter writer;
-  std::string filename;
-  std::string outputname;
+  char filename[50];
+  char outputname[50];
 
   int idV =1;
   while(!exit_flag) {
