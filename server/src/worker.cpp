@@ -175,9 +175,12 @@ int main(int argc, char *argv[])
   int msg = 0;
   int iframe = 0;
   Packet packs;
+  std::vector<std::string> classesFound;   
+  std::vector<std::string> classesTotal; 
   while(!exit_flag) {
-    
+  
     // recv from ven
+    std::vector<std::string> classesFrame;    
     if (unprocessed_frame_queue.size() > 0) {
       msg+=1;
       packs = unprocessed_frame_queue.front();
@@ -203,7 +206,11 @@ int main(int argc, char *argv[])
         #endif
 
         // detect result (bounding box OR Skeleton) draw
-        detector->draw(mat);
+        classesFrame = detector->draw(mat);
+        std::set_union(classesFrame.begin(), classesFrame.end(),
+                       classesTotal.begin(), classesTotal.end(),                  
+                       std::back_inserter(classesTotal));
+
         matBoxes.push_back(mat.clone());
         // mat -> vector
         
@@ -212,8 +219,8 @@ int main(int argc, char *argv[])
 
       }
 
-      std::vector<std::string> classes;
-      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes,classes);
+      
+      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes,classesTotal);
       // push to processed frame_queue
       processed_frame_queue.push_back(*packetProcessed);
       

@@ -89,7 +89,7 @@ void *recv_in_thread(void *ptr)
         //printf("printing frame %d \n",idV);
         writer.write(mat);
       }
-
+      writer.release();
 
       system(comand.c_str());
 

@@ -32,11 +32,13 @@ std::vector<std::string> YoloDetector::objects_names_from_file(std::string const
 }
 
 
-void YoloDetector::draw(cv::Mat mat)
+std::vector<std::string> YoloDetector::draw(cv::Mat mat)
 {
+  std::vector<std::string> classes;
   int const colors[6][3] = { { 1,0,1 },{ 0,0,1 },{ 0,1,1 },{ 0,1,0 },{ 1,1,0 },{ 1,0,0 } };
 
   for (auto &i : det_vec) {
+
     cv::Scalar color = obj_id_to_color(i.obj_id);
     cv::rectangle(mat, cv::Rect(i.x, i.y, i.w, i.h), color, 3);
     if (obj_names.size() > i.obj_id) {
@@ -51,7 +53,13 @@ void YoloDetector::draw(cv::Mat mat)
           cv::Point2f(std::min((int)i.x + max_width, mat.cols - 1), std::min((int)i.y, mat.rows - 1)), 
           color, CV_FILLED, 8, 0);
       putText(mat, obj_name, cv::Point2f(i.x + 10, i.y - 10), cv::FONT_HERSHEY_DUPLEX, 0.8, cv::Scalar(0, 0, 0), 2);
+
+      if(std::find(classes.begin(),classes.end(),obj_name) == classes.end())
+        classes.push_back(obj_name)
     }
+
+    
+
   }
 }
 
