@@ -61,6 +61,9 @@ std::vector<std::string> YoloDetector::draw(cv::Mat mat)
     
 
   }
+
+  return classes;
+
 }
 
 std::string YoloDetector::det_to_json(int frame_id)

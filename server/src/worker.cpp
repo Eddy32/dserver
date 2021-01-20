@@ -10,7 +10,6 @@
 #include "args.hpp"
 #include "yolo_v2_class.hpp"
 #include "DetectorInterface.hpp"
-#include "pose_detector.hpp"
 #include "yolo_detector.hpp"
 #include <opencv2/opencv.hpp>			
 #include "frame.hpp"
@@ -155,7 +154,7 @@ int main(int argc, char *argv[])
   // darkent
   DetectorInterface *detector = nullptr;
   if (pose_flag) {
-    detector = new PoseDetector(cfg_path, weights_path, gpu_id);
+  //  detector = new PoseDetector(cfg_path, weights_path, gpu_id);
   }
   else {
     detector = new YoloDetector(cfg_path, weights_path, names_path, gpu_id);
@@ -176,7 +175,6 @@ int main(int argc, char *argv[])
   int iframe = 0;
   Packet packs;
   std::vector<std::string> classesFound;   
-  std::vector<std::string> classesTotal; 
   while(!exit_flag) {
   
     // recv from ven
@@ -207,9 +205,8 @@ int main(int argc, char *argv[])
 
         // detect result (bounding box OR Skeleton) draw
         classesFrame = detector->draw(mat);
-        std::set_union(classesFrame.begin(), classesFrame.end(),
-                       classesTotal.begin(), classesTotal.end(),                  
-                       std::back_inserter(classesTotal));
+        classesFound.insert(classesFound.end(),classesFrame.begin(),classesFrame.end());
+        
 
         matBoxes.push_back(mat.clone());
         // mat -> vector
@@ -218,9 +215,9 @@ int main(int argc, char *argv[])
         cv::imencode(".jpg", mat, res_vec, param);
 
       }
-
       
-      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes,classesTotal);
+      classesFound.erase( std::unique( classesFound.begin(), classesFound.end() ), classesFound.end() );
+      Packet* packetProcessed = new Packet(packet->id_user,packet->id_camera,packet->timestamp,matBoxes,classesFound);
       // push to processed frame_queue
       processed_frame_queue.push_back(*packetProcessed);
       
