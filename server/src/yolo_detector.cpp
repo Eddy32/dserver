@@ -55,7 +55,7 @@ std::vector<std::string> YoloDetector::draw(cv::Mat mat)
       putText(mat, obj_name, cv::Point2f(i.x + 10, i.y - 10), cv::FONT_HERSHEY_DUPLEX, 0.8, cv::Scalar(0, 0, 0), 2);
 
       if(std::find(classes.begin(),classes.end(),obj_name) == classes.end())
-        classes.push_back(obj_name)
+        classes.push_back(obj_name);
     }
 
     
