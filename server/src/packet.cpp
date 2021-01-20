@@ -74,7 +74,7 @@ Packet* json_to_packet(void* buf){
 
   json_object *id_user_json = json_object_object_get(raw_obj, "id_user");
   json_object *id_camera_json = json_object_object_get(raw_obj, "id_camera");
-  json_object *classes_json = json_object_object_get(raw_obj, "classe");
+  json_object *classes_json = json_object_object_get(raw_obj, "classes");
   json_object *timestamp_json = json_object_object_get(raw_obj, "timestamp");
   json_object *dados_json = json_object_object_get(raw_obj, "dados");
 
