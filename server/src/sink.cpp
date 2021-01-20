@@ -50,7 +50,7 @@ void *recv_in_thread(void *ptr)
   cv::VideoWriter writer;
   std::string filename;
   std::string outputname;
-
+  std::string comand;
   int idV =1;
   while(!exit_flag) {
     recv_json_len = zmq_recv(sock_pull, json_buf, JSON_BUFF_SIZE, ZMQ_NOBLOCK);
@@ -77,7 +77,8 @@ void *recv_in_thread(void *ptr)
       //gravar video
       filename = "cap" + std::to_string(idV) + ".mov";
       outputname = "cap" + std::to_string(idV) + ".mp4";
-      
+      comand = "ffmpeg -i " +  filename + " -vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4 " +  outputname;
+
       writer.open(filename ,CV_FOURCC('m','p','4','v'), 20, cv::Size(640, 480), true);
       if (!writer.isOpened()) {
       printf("BRO ESTOU COM TRIPS!");
@@ -90,7 +91,7 @@ void *recv_in_thread(void *ptr)
       }
 
 
-      system("ffmpeg -i " +  filename.c_str(); + " -vcodec libx264 -pix_fmt yuv420p -profile:v baseline -level 3 -f mp4 " +  outputname.c_str());
+      system(comando);
 
       ////
 
