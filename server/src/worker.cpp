@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
   void *context = zmq_ctx_new();
 
   sock_pull = zmq_socket(context, ZMQ_PULL);
-  ret = zmq_connect(sock_pull, "ipc://127.0.0.1:50505");
+  ret = zmq_connect(sock_pull, "tcp://127.0.0.1:43434");
   assert(ret != -1);
 
   sock_push = zmq_socket(context, ZMQ_PUSH);
