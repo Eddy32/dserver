@@ -133,7 +133,7 @@ int main()
   assert(ret != -1);
 
   sock_push = zmq_socket(context, ZMQ_PUSH);
-  ret = zmq_bind(sock_push, "ipc://127.0.0.1:50505");
+  ret = zmq_bind(sock_push, "tcp://127.0.0.1:43434");
   assert(ret != -1);
 
   // frame_pool

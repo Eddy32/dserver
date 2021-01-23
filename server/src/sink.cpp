@@ -73,11 +73,11 @@ void *recv_in_thread(void *ptr)
         lelee.write(a,res_vec.size());
       }
       */
-
+	/*
       //gravar video
       filename = "cap" + std::to_string(idV) + ".avi";
       outputname = "cap" + std::to_string(idV) + ".mp4";
-      comand = "ffmpeg -i " +  filename + " " +  outputname + "-y";
+      comand = "ffmpeg -i " +  filename + " " +  outputname + " -y";
 
       writer.open(filename ,CV_FOURCC('X','V','I','D'), 20, cv::Size(640, 480), true);
       if (!writer.isOpened()) {
@@ -153,7 +153,7 @@ void *recv_in_thread(void *ptr)
 
 
       idV++;
-
+*/
 
       processed_frame_queue.push_back(*packet);
 
@@ -184,10 +184,6 @@ void *send_in_thread(void *ptr)
 
       
       
-      if(i>=21)
-         i = 18;
-        i++;
-      printf("I:: %d",i);
       
      for(cv::Mat mat: packet->frames){
         
@@ -199,10 +195,7 @@ void *send_in_thread(void *ptr)
         cv::vector<uchar> topic ;
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d  ----\n",buffer.size());
-        if(i==20)
-          zmq_send(stream_pub,"20", 2, ZMQ_SNDMORE);
-        else
-          zmq_send(stream_pub,"18", 2, ZMQ_SNDMORE);
+        zmq_send(stream_pub,"20", 2, ZMQ_SNDMORE);
         zmq_send(stream_pub, buffer.data(), buffer.size(), 0);
       }
 
@@ -231,13 +224,13 @@ int main()
   void *context = zmq_ctx_new();
 
   sock_pull = zmq_socket(context, ZMQ_PULL);
-  ret = zmq_bind(sock_pull, "ipc://127.0.0.1:44444");
+  ret = zmq_bind(sock_pull, "tcp://*:44444");
   assert(ret != -1);
 
   sock_pub = zmq_socket(context, ZMQ_PUB);
 
   stream_pub = zmq_socket(context,ZMQ_PUB);
-  ret = zmq_bind(stream_pub,"tcp://*:5570"); 
+  ret = zmq_connect(stream_pub,"tcp://192.168.85.225:61626"); 
 
   ret = zmq_bind(sock_pub, "tcp://*:5571");
   assert(ret != -1);
