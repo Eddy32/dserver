@@ -73,7 +73,7 @@ void *recv_in_thread(void *ptr)
         lelee.write(a,res_vec.size());
       }
       */
-	/*
+	
       //gravar video
       filename = "cap" + std::to_string(idV) + ".avi";
       outputname = "cap" + std::to_string(idV) + ".mp4";
@@ -115,10 +115,10 @@ void *recv_in_thread(void *ptr)
       CURLcode ret;
       CURL *hnd;
       struct curl_slist *slist1;
-      std::string idUser = "600821072d723d0017842456";
-      std::string idCamera = "600821332d723d0017842457";
+      std::string idUser = "600cb591c947230017bfc193";
+      std::string idCamera = "600f15d40bc60f0017c78aa3";
       std::string timestamp = "13/03/2000";
-      std::string classes = "[\"person\", \"cat\"]";
+      std::string classes = "[\"person\"]";
       std::string url = "https://skeyestreammedia.s3.eu-west-3.amazonaws.com/" + path + object_name; 
       std::string jsonstr = "{\"idUser\": \"" + idUser +
       "\",\"idCamera\": \""+ idCamera +
@@ -131,7 +131,7 @@ void *recv_in_thread(void *ptr)
       slist1 = curl_slist_append(slist1, "Content-Type: application/json");
 
       hnd = curl_easy_init();
-      curl_easy_setopt(hnd, CURLOPT_URL, "http://backend-notification-service.herokuapp.com/notifications/yolo");
+      curl_easy_setopt(hnd, CURLOPT_URL, "http://skeye-backend.herokuapp.com/notifications/yolo");
       curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
       curl_easy_setopt(hnd, CURLOPT_POSTFIELDS, jsonstr.c_str());
       curl_easy_setopt(hnd, CURLOPT_USERAGENT, "curl/7.38.0");
@@ -153,7 +153,7 @@ void *recv_in_thread(void *ptr)
 
 
       idV++;
-*/
+
 
       processed_frame_queue.push_back(*packet);
 
@@ -195,7 +195,7 @@ void *send_in_thread(void *ptr)
         cv::vector<uchar> topic ;
         cv::imencode(".jpg", mat, buffer);
         printf("SIZE: %d  ----\n",buffer.size());
-        zmq_send(stream_pub,"20", 2, ZMQ_SNDMORE);
+        //zmq_send(stream_pub,"20", 2, ZMQ_SNDMORE);
         zmq_send(stream_pub, buffer.data(), buffer.size(), 0);
       }
 
@@ -224,13 +224,13 @@ int main()
   void *context = zmq_ctx_new();
 
   sock_pull = zmq_socket(context, ZMQ_PULL);
-  ret = zmq_bind(sock_pull, "tcp://*:44444");
+  ret = zmq_bind(sock_pull, "tcp://*:45645");
   assert(ret != -1);
 
   sock_pub = zmq_socket(context, ZMQ_PUB);
 
   stream_pub = zmq_socket(context,ZMQ_PUB);
-  ret = zmq_connect(stream_pub,"tcp://192.168.85.225:61626"); 
+  ret = zmq_connect(stream_pub,"tcp://127.0.0.1:47777"); 
 
   ret = zmq_bind(sock_pub, "tcp://*:5571");
   assert(ret != -1);
