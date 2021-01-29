@@ -115,10 +115,20 @@ void *recv_in_thread(void *ptr)
       CURLcode ret;
       CURL *hnd;
       struct curl_slist *slist1;
-      std::string idUser = "600cb591c947230017bfc193";
-      std::string idCamera = "600f15d40bc60f0017c78aa3";
-      std::string timestamp = "13/03/2000";
-      std::string classes = "[\"person\"]";
+      std::string idUser = packet->id_user;
+      std::string idCamera = packet->id_camera;
+      std::string timestamp = packet->timestamp;
+      std::string classes = "["
+      int nClasses = (packet->classes).size();
+      int counter = 1;
+      for(string classfound: packet->classes){
+        if(counter!=nClasses)
+          classes = classes + "\"" + classfound + "\",";
+        else
+          classes = classes + "\"" + classfound + "\""; 
+      }
+      classes = classes + "]";
+      cout << "CLASSES" << classes << "\n\n\n\n\n\n"
       std::string url = "https://skeyestreammedia.s3.eu-west-3.amazonaws.com/" + path + object_name; 
       std::string jsonstr = "{\"idUser\": \"" + idUser +
       "\",\"idCamera\": \""+ idCamera +
@@ -126,6 +136,8 @@ void *recv_in_thread(void *ptr)
             "\",\"classes\": " + classes  +
             ",\"urlVideo\": \""+   url   +
             "\"}";
+
+      printf("STRING: %s \n\n\n\n\n\n", jsonstr);
 
       slist1 = NULL;
       slist1 = curl_slist_append(slist1, "Content-Type: application/json");
